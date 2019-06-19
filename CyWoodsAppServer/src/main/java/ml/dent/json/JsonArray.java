@@ -3,7 +3,9 @@ package ml.dent.json;
 import java.util.*;
 
 public class JsonArray implements JsonValue {
-	private static final char CR = '\n';
+	private static final char LF = '\n';
+	private static final String TAB = "    ";
+
 	private ArrayList<JsonValue> list;
 
 	public JsonArray() {
@@ -65,14 +67,14 @@ public class JsonArray implements JsonValue {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("[").append(CR);
+		sb.append("[").append(LF);
 		for (int i = 0; i < list.size(); i++) {
 			JsonValue jv = list.get(i);
 			sb.append(jv.toString());
 			if (i != list.size() - 1)
-				sb.append(",").append(CR);
+				sb.append(",").append(LF);
 			else
-				sb.append(CR);
+				sb.append(LF);
 		}
 		sb.append("]");
 		return sb.toString();

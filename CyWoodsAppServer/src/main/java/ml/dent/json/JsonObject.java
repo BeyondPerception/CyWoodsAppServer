@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class JsonObject implements JsonValue {
-	private static final char CR = '\n';
+	private static final char LF = '\n';
+	private static final String TAB = "    ";
+
 	private ArrayList<Pair> list;
 
 	public JsonObject() {
@@ -59,23 +61,14 @@ public class JsonObject implements JsonValue {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		int level = 0;
-		sb.append("{").append(CR);
+		sb.append("{").append(LF);
 		for (int i = 0; i < list.size(); i++) {
 			Pair p = list.get(i);
-			String tak = p.toString();
-			if (tak.contains("{") || tak.contains("[")) {
-				level++;
-			}
-			if (tak.contains("}") || tak.contains("]")) {
-				level--;
-			}
-			tak = String.join("", Collections.nCopies(level, "\t")) + tak;
-			sb.append(tak);
+			sb.append(p.toString());
 			if (i != list.size() - 1)
-				sb.append(",").append(CR);
+				sb.append(",").append(LF);
 			else
-				sb.append(CR);
+				sb.append(LF);
 		}
 		sb.append("}");
 		return sb.toString();

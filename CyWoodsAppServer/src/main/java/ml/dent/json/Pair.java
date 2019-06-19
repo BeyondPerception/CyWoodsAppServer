@@ -12,7 +12,7 @@ public class Pair {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("\"").append(name).append("\"").append(" : ").append(value.toString());
+		sb.append("\"").append(name).append("\"").append(": ").append(value.toString());
 		return sb.toString();
 	}
 }
