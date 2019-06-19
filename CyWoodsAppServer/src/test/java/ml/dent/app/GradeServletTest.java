@@ -27,6 +27,6 @@ public class GradeServletTest {
 		new GradeServlet().doGet(req, resp);
 
 		pw.flush();
-//		System.out.println(sw.toString());
+		System.out.println(sw.toString());
 	}
 }

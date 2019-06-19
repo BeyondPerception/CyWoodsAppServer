@@ -5,7 +5,7 @@ import java.util.Collections;
 
 public class JsonObject implements JsonValue {
 	private static final char LF = '\n';
-	private static final String TAB = "    ";
+	private static final String TAB = "  "; // 2 space tabs looks nice in JSON
 
 	private ArrayList<Pair> list;
 
@@ -13,7 +13,7 @@ public class JsonObject implements JsonValue {
 		list = new ArrayList<Pair>();
 	}
 
-	public JsonObject add(Pair p) {
+	private JsonObject add(Pair p) {
 		list.add(p);
 		return this;
 	}

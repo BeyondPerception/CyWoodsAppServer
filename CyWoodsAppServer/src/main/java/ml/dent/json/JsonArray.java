@@ -4,7 +4,7 @@ import java.util.*;
 
 public class JsonArray implements JsonValue {
 	private static final char LF = '\n';
-	private static final String TAB = "    ";
+	private static final String TAB = "  "; // 2 space tabs looks nice in JSON
 
 	private ArrayList<JsonValue> list;
 
