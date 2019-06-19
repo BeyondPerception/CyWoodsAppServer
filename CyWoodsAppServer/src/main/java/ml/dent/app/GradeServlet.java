@@ -1,13 +1,15 @@
 package ml.dent.app;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/GradeServlet")
+@WebServlet("/Grades")
 public class GradeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -20,11 +22,16 @@ public class GradeServlet extends HttpServlet {
 	 * only GET requests are necessary.
 	 * 
 	 * The frontend will send an HTTP request to this servlet at the above endpoint
-	 * (e.g. www.dent.ml/GradeServlet), and we'll write our response to the HTTP
-	 * response.
+	 * (e.g. www.dent.ml/Grades), and we'll write our response to the HTTP response.
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		response.getWriter().append("{JSON}: ").append(request.getContextPath());
+		String user_encoded = request.getParameter("username");
+		String pass_encoded = request.getParameter("password");
+		
+		if (user_encoded == null) {
+			
+		}
+		
 	}
 }
