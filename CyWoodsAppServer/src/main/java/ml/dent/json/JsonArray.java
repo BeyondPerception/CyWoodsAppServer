@@ -1,7 +1,13 @@
 package ml.dent.json;
 
-import java.util.*;
+import java.util.ArrayList;
 
+/**
+ * A JsonArray is just a list of values. Values are any class that implements
+ * the JsonValue interface. See {@link JsonObject} for usage of this package.
+ * 
+ * @author Ronak Malik
+ */
 public class JsonArray implements JsonValue {
 	private static final char LF = '\n';
 	private static final String TAB = "  "; // 2 space tabs looks nice in JSON

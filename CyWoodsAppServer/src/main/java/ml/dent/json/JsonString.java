@@ -1,5 +1,10 @@
 package ml.dent.json;
 
+/**
+ * JSON wrapper for the already existing main types.
+ * 
+ * @author Ronak Malik
+ */
 public class JsonString implements JsonValue {
 	private String value;
 

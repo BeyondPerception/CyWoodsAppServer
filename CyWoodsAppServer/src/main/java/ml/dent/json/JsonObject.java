@@ -1,8 +1,29 @@
 package ml.dent.json;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
+/**
+ * This is probably where you should start before sending information from the
+ * servlets. This package and series of classes allows for a simple and
+ * structured way to create JSON data and send it as strings to the client. <br>
+ * Usage: <br>
+ * Using these classes is fairly simple, all you need to do is create an
+ * instance of the JsonObject class and add Pairs to it. A Pair is a
+ * String-Value pair that should contain useful information. A value can range
+ * from another JsonObject, a JsonArray, or any other class that implements the
+ * JsonValue interface. <br>
+ * <br>
+ * Calling the toString method in any of these classes makes JSON compatible
+ * strings that can be inserted into the other JSON suite of classes. ALWAYS
+ * call the toString on the original JsonObject before sending it to the client.
+ * If you wish to extend these classes, make sure they have a working toString
+ * method.<br>
+ * <br>
+ * Why did I write these classes versus just using a library? idk, cause I felt
+ * like it.
+ * 
+ * @author Ronak Malik
+ */
 public class JsonObject implements JsonValue {
 	private static final char LF = '\n';
 	private static final String TAB = "  "; // 2 space tabs looks nice in JSON

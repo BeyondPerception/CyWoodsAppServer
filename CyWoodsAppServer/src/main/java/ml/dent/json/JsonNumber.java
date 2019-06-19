@@ -1,5 +1,10 @@
 package ml.dent.json;
 
+/**
+ * JSON wrapper for the already existing main types.
+ * 
+ * @author Ronak Malik
+ */
 public class JsonNumber implements JsonValue {
 	private Number value;
 
