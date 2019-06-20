@@ -35,12 +35,12 @@ public class Assignment {
 	public JsonObject getJsonData() {
 		return new JsonObject().add("name", name)
 				.add("category", category)
-				.add("Date Assigned", dateAssigned)
-				.add("Date Due", dateDue)
+				.add("dateAssigned", dateAssigned)
+				.add("dateDue", dateDue)
 				.add("score", score)
 				.add("weight", weight)
 				.add("maxScore", maxScore)
-				.add("Extra Credit", isExtraCredit);
+				.add("extraCredit", isExtraCredit);
 	}
 
 	public String getName() {
