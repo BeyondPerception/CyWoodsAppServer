@@ -8,12 +8,12 @@ import ml.dent.json.JsonObject;
  * 
  * @author Ronak Malik
  */
-public class Error {
+public class Default {
 
 	/**
 	 * Don't let anyone instantiate this class.
 	 */
-	private Error() {
+	private Default() {
 	}
 
 	public static String NotImplemented(String message) {
@@ -21,7 +21,7 @@ public class Error {
 				.add("code", 501)
 				.add("description", "Not Implemented")
 				.add("message", message)
-				.toString();
+				.format();
 	}
 
 	public static String BadRequest(String message) {
@@ -29,7 +29,7 @@ public class Error {
 				.add("code", 400)
 				.add("description", "Bad Request")
 				.add("message", message)
-				.toString();
+				.format();
 	}
 	
 	public static String OK(String message) {
@@ -37,7 +37,6 @@ public class Error {
 				.add("code", 200)
 				.add("description", "OK")
 				.add("message", message)
-				.toString();
+				.format();
 	}
-	
 }

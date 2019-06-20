@@ -1,4 +1,4 @@
-package ml.dent.app;
+package ml.dent.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ml.dent.util.Error;
+import ml.dent.util.Default;
 
 /**
  * The frontend will send an HTTP request to this servlet at the above endpoint
@@ -35,7 +35,7 @@ public class GradeServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		PrintWriter pw = resp.getWriter();
 
-		pw.println(Error.BadRequest("GET Requests are not allowed!"));
+		pw.println(Default.BadRequest("GET Requests are not allowed!"));
 	}
 
 	/**
@@ -53,13 +53,17 @@ public class GradeServlet extends HttpServlet {
 		String pass_encoded = req.getParameter("password");
 
 		if (user_encoded == null) {
-			pw.println(Error.BadRequest("No Username Provided"));
+			pw.println(Default.BadRequest("No Username Provided"));
 			return;
 		}
 		if (pass_encoded == null) {
-			pw.println(Error.BadRequest("No Password Provided"));
+			pw.println(Default.BadRequest("No Password Provided"));
 			return;
 		}
-		pw.println(Error.OK(""));
+
+		String username = user_encoded;
+		String password = user_encoded;
+
+		pw.println(Default.OK(""));
 	}
 }

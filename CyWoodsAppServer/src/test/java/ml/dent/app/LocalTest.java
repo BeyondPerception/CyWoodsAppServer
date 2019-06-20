@@ -22,6 +22,6 @@ public class LocalTest {
 	             .add("type", "fax")
 	             .add("number", "646 555-4567")));
 		
-		System.out.println(test.toString());
+		System.out.println(test.format());
 	}
 }

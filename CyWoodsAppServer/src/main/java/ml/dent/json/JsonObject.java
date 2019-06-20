@@ -26,7 +26,7 @@ import java.util.ArrayList;
  */
 public class JsonObject implements JsonValue {
 	private static final char LF = '\n';
-	private static final String TAB = "  "; // 2 space tabs looks nice in JSON
+	private static final int TAB = 2; // 2 space tabs looks nice in JSON
 
 	private ArrayList<Pair> list;
 
@@ -77,6 +77,51 @@ public class JsonObject implements JsonValue {
 	public JsonObject addNull(String name) {
 		add(new Pair(name, new JsonNull()));
 		return this;
+	}
+
+	/**
+	 * @return A formatted version of the JSON string this JsonObject would return
+	 */
+	public String format() {
+		String flat = toString();
+		StringBuilder sb = new StringBuilder();
+
+		boolean quotes = false;
+		for (int i = 0, idt = 0; i < flat.length(); i++) {
+			char cur = flat.charAt(i);
+
+			if (cur == '\"') {
+				sb.append(cur);
+				quotes = !quotes;
+				continue;
+			}
+
+			if (!quotes) {
+				switch (cur) {
+				case '{':
+				case '[':
+					sb.append(cur).append(LF).append(String.format("%" + (idt += TAB) + "s", ""));
+					continue;
+				case '}':
+				case ']':
+					sb.append(LF).append(((idt -= TAB) > 0 ? String.format("%" + idt + "s", "") : "") + cur);
+					continue;
+				case ':':
+					sb.append(cur).append(" ");
+					continue;
+				case ',':
+					sb.append(cur).append(LF).append((idt > 0 ? String.format("%" + idt + "s", "") : ""));
+					continue;
+				default:
+					if (Character.isWhitespace(cur))
+						continue;
+				}
+			}
+
+			sb.append(cur).append((cur == '\\' ? "" + flat.charAt(++i) : ""));
+		}
+
+		return sb.toString();
 	}
 
 	@Override
