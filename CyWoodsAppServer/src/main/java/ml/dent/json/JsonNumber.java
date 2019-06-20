@@ -22,6 +22,9 @@ public class JsonNumber implements JsonValue {
 
 	@Override
 	public String toString() {
+		if (Double.isNaN(value.doubleValue())) {
+			return new JsonNull().toString();
+		}
 		return value.toString();
 	}
 }
