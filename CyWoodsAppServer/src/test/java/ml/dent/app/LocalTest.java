@@ -23,5 +23,8 @@ public class LocalTest {
 	             .add("number", "646 555-4567")));
 		
 		System.out.println(test.format());
+		
+		JsonObject doubleTest = new JsonObject().add("grade", Double.NaN);
+		System.out.println(doubleTest.format());
 	}
 }
