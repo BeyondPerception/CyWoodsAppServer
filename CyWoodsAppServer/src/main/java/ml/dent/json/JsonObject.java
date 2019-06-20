@@ -127,14 +127,12 @@ public class JsonObject implements JsonValue {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{").append(LF);
+		sb.append("{");
 		for (int i = 0; i < list.size(); i++) {
 			Pair p = list.get(i);
 			sb.append(p.toString());
 			if (i != list.size() - 1)
-				sb.append(",").append(LF);
-			else
-				sb.append(LF);
+				sb.append(",");
 		}
 		sb.append("}");
 		return sb.toString();
