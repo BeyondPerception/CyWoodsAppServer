@@ -32,6 +32,22 @@ public class Default {
 				.format();
 	}
 	
+	public static String BadGateway(String message) {
+		return new JsonObject().add("success", false)
+				.add("code", 502)
+				.add("description", "Bad Gateway")
+				.add("message", message)
+				.format();
+	}
+	
+	public static String NotAcceptable(String message) {
+		return new JsonObject().add("success", false)
+		.add("code", 406)
+		.add("description", "Not Acceptable")
+		.add("message", message)
+		.format();
+	}
+	
 	public static String OK(String message) {
 		return new JsonObject().add("success", true)
 				.add("code", 200)
