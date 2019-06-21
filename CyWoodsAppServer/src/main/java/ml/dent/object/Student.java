@@ -19,6 +19,12 @@ public class Student {
 	private String username; // This is kept private and should NOT be put in the JSON data.
 	private String password; // This is kept private and should NOT be put in the JSON data.
 	private ArrayList<Class> classes; // this is an ordered list, the first element corresponds to first period.
+	private Transcript transcript;
+
+	public Student(String username, String password) {
+		this.username = username;
+		this.password = password;
+	}
 
 	public Student(String name, String username, String password) {
 		this.setName(name);
