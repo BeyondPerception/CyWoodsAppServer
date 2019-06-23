@@ -1,6 +1,6 @@
 package ml.dent.object;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 import ml.dent.json.JsonArray;
 import ml.dent.json.JsonObject;
@@ -18,7 +18,11 @@ public class Student {
 	private String name;
 	private String username; // This is kept private and should NOT be put in the JSON data.
 	private String password; // This is kept private and should NOT be put in the JSON data.
-	private ArrayList<Class> classes; // this is an ordered list, the first element corresponds to first period.
+
+	// This is an ordered list, the first element corresponds to first
+	// period. Making it a map with the names of the classes and the actual class
+	// object makes it easier on us in the future.
+	private LinkedHashMap<String, Class> classes;
 	private Transcript transcript;
 
 	public Student(String username, String password) {
@@ -30,10 +34,10 @@ public class Student {
 		this.setName(name);
 		this.setUsername(username);
 		this.setPassword(password);
-		classes = new ArrayList<>();
+		classes = new LinkedHashMap<>();
 	}
 
-	public Student(String name, String username, String password, ArrayList<Class> classes) {
+	public Student(String name, String username, String password, LinkedHashMap<String, Class> classes) {
 		this.setName(name);
 		this.setUsername(username);
 		this.setPassword(password);
@@ -43,7 +47,8 @@ public class Student {
 	public JsonObject getJsonData() {
 		JsonObject res = new JsonObject().add("name", name);
 		JsonArray classArray = new JsonArray();
-		for (Class c : classes) {
+		for (String s : classes.keySet()) {
+			Class c = classes.get(s);
 			classArray.add(c.getJsonData());
 		}
 		res.add("classes", classArray);
@@ -75,6 +80,11 @@ public class Student {
 	}
 
 	public void addClass(Class c) {
-		classes.add(c);
+		classes.put(c.getName(), c);
 	}
+
+	public void addClass(String s) {
+		classes.put(s, new Class());
+	}
+
 }
