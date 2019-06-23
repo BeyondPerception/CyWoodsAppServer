@@ -9,22 +9,26 @@ public class Class {
 	private String name;
 	private String teacher;
 	private ArrayList<Assignment> assigns;
+	private double grade;
 
 	public Class() {
 		setName("");
 		setTeacher("");
+		setGrade(Double.NaN);
 		setAssigns(new ArrayList<Assignment>());
 	}
 
-	public Class(String n, String t) {
+	public Class(String n) {
 		setName(n);
-		setTeacher(t);
+		setTeacher("");
+		setGrade(Double.NaN);
 		setAssigns(new ArrayList<Assignment>());
 	}
 
 	public Class(String n, String t, ArrayList<Assignment> a) {
 		setName(n);
 		setTeacher(t);
+		setGrade(Double.NaN);
 		setAssigns(a);
 	}
 
@@ -39,7 +43,7 @@ public class Class {
 	}
 
 	public JsonObject getJsonData() {
-		JsonObject res = new JsonObject().add("name", name).add("teacher", teacher);
+		JsonObject res = new JsonObject().add("name", name).add("teacher", teacher).add("grade", getGrade());
 		JsonArray assignments = new JsonArray();
 		for (Assignment a : assigns) {
 			assignments.add(a.getJsonData());
@@ -62,6 +66,14 @@ public class Class {
 
 	public void setTeacher(String teacher) {
 		this.teacher = teacher;
+	}
+
+	public double getGrade() {
+		return grade;
+	}
+
+	public void setGrade(double grade) {
+		this.grade = grade;
 	}
 
 	public ArrayList<Assignment> getAssigns() {
