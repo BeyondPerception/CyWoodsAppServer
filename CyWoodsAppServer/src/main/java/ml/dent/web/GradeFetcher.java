@@ -34,7 +34,7 @@ public class GradeFetcher {
 	// Cookies and such
 	private String authCookie;
 	private String sessionID;
-	private String siteCode;
+	// private String siteCode;
 
 	/**
 	 * Kind of counter-intuitively, the grade fetcher builds up the instance of the
@@ -47,6 +47,12 @@ public class GradeFetcher {
 	private boolean testUser;
 
 	/**
+	 * A 1 indexed number from 1-4 so we can get the assignments for a specific
+	 * class later.
+	 */
+	private int quarter;
+
+	/**
 	 * The username and password must be passed to the grade fetcher, otherwise it
 	 * can't do anything. These parameters are already decrypted, as all the
 	 * security in transferring information should be done within the servlet.
@@ -54,6 +60,7 @@ public class GradeFetcher {
 	public GradeFetcher(String username, String password) {
 		currentUser = new Student(username, password);
 		testUser = false;
+		quarter = 1;
 	}
 
 	/**
@@ -71,9 +78,9 @@ public class GradeFetcher {
 		if (testUser) {
 			return loginRet;
 		}
-		String weekViewRet;
+		String weekViewRet = fetchWeekView();
 
-		return null;
+		return loginRet;
 	}
 
 	/**
@@ -101,7 +108,7 @@ public class GradeFetcher {
 
 			authCookie = loginResponse.cookie(".AuthCookie");
 			sessionID = loginResponse.cookie("ASP.NET_SessionId");
-			siteCode = loginResponse.cookie("SPIHACSiteCode");
+			// siteCode = loginResponse.cookie("SPIHACSiteCode");
 
 			Elements loginSummary = returnPage.getElementsByClass("validation-summary-errors");
 			if (!loginSummary.isEmpty()) {
@@ -116,11 +123,27 @@ public class GradeFetcher {
 		return Default.OK("");
 	}
 
+	/**
+	 * Grabs everything it can from the WeekView on Home Access. Not assignments
+	 * though. Assignments are easier to get from another page.
+	 */
 	public String fetchWeekView() {
 		try {
-			Document weekView = Jsoup.connect(HAC_SCHEDULE_URL).get();
-			Element classes = weekView.
-			System.out.println(classes);
+			// We use URLS to navigate HAC because faking clicks is sketchy
+			Document weekView = getDocument(HAC_SCHEDULE_URL);
+
+			// This may seem very specific, but getting exact CSS selectors like this is
+			// really easy. Firefox(which you should be using) has a handy tool that allows
+			// you to right click an element in inspect element and copy the CSS Selector
+			String studentName = weekView.select("li.sg-banner-menu-element:nth-child(1) > span:nth-child(1)").text();
+			currentUser.setName(studentName);
+
+			Element classTable = weekView.select(".sg-asp-table > tbody:nth-child(2)").first();
+			Elements rows = classTable.select("tr");
+
+			for (Element row : rows) {
+				System.out.println(row.getElementById("courseName").text());
+			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -128,6 +151,18 @@ public class GradeFetcher {
 		}
 
 		return Default.OK("");
+	}
+
+	private Document getDocument(String url) throws IOException {
+		return Jsoup.connect(url).cookie(".AuthCookie", authCookie).cookie("ASP.NET_SessionId", sessionID).get();
+	}
+
+	private String assignmentURL(String id) {
+		return new StringBuilder().append(
+				"https://home-access.cfisd.net/HomeAccess/Content/Student/AssignmentsFromRCPopUp.aspx?section_key=")
+				.append(id)
+				.append("&course_session=1&RC_RUN=4&MARK_TITLE=9WK%20%20.Trim()&MARK_TYPE=9WK%20%20.Trim()&SLOT_INDEX=1")
+				.toString();
 	}
 
 	public void populateTestUser() {
