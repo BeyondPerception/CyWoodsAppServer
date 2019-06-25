@@ -10,6 +10,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import ml.dent.object.Student;
+import ml.dent.object.Teacher;
 import ml.dent.util.Default;
 
 /**
@@ -142,9 +143,29 @@ public class GradeFetcher {
 			Elements rows = classTable.select("tr");
 
 			for (Element row : rows) {
-				System.out.println(row.getElementById("courseName").text());
-			}
+				// Course and staff information
+				String courseName = row.getElementById("courseName").text();
+				if (currentUser.getClass(courseName) != null) {
+					// You've probable seen it before, but HAC sometimes does this really dumb thing
+					// where it had duplicate classes around certain periods like lunch. So if the
+					// class already exists, skip this row.
+					continue;
+				}
+				String teacherName = row.getElementById("staffName").text();
+				String teacherEmail = row.getElementById("staffName").toString();
+				teacherEmail = teacherEmail.substring(teacherEmail.indexOf(":") + 1);
+				teacherEmail = teacherEmail.substring(0, teacherEmail.indexOf("\""));
 
+				// Adding course and staff info to user
+				currentUser.addClass(courseName);
+				currentUser.getClass(courseName).setTeacher(new Teacher(teacherName, teacherEmail));
+
+				String average = row.getElementById("average").text();
+				if (!average.isEmpty()) {
+					// For lunch and stuff
+					currentUser.getClass(courseName).setGrade(Double.parseDouble(average));
+				}
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			return Default.BadGateway("Failed to get week view after login");
@@ -160,9 +181,8 @@ public class GradeFetcher {
 	private String assignmentURL(String id) {
 		return new StringBuilder().append(
 				"https://home-access.cfisd.net/HomeAccess/Content/Student/AssignmentsFromRCPopUp.aspx?section_key=")
-				.append(id)
-				.append("&course_session=1&RC_RUN=4&MARK_TITLE=9WK%20%20.Trim()&MARK_TYPE=9WK%20%20.Trim()&SLOT_INDEX=1")
-				.toString();
+				.append(id).append("&course_session=1&RC_RUN=").append(quarter)
+				.append("&MARK_TITLE=9WK%20%20.Trim()&MARK_TYPE=9WK%20%20.Trim()&SLOT_INDEX=1").toString();
 	}
 
 	public void populateTestUser() {
