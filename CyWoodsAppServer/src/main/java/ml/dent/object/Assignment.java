@@ -7,40 +7,49 @@ public class Assignment {
 	private String category;
 	private String dateAssigned;
 	private String dateDue;
+	private String note;
 	private double score;
 	private double weight;
-	private boolean isExtraCredit;
 	private double maxScore;
+	private boolean isExtraCredit;
 
 	/**
-	 * Although a little overwhelming, the reason there is only one constructor with
-	 * EVERY value is because the assignment will be re-instantiated every time the
-	 * user refreshes.
+	 * Although a little overwhelming, the reason there is only one (other than
+	 * default) constructor with EVERY value is because the assignment will be
+	 * re-instantiated every time the user refreshes.
 	 */
-	public Assignment(String name, String category, String dateAssigned, String dateDue, double maxScore, double weight,
-			double score, boolean isExtraCredit) {
-		this.setName(name);
-		this.setCategory(category);
-		this.setDateAssigned(dateAssigned);
-		this.setDateDue(dateDue);
-		this.setWeight(weight);
-		this.setScore(score);
-		this.setMaxScore(maxScore);
-		this.setExtraCredit(isExtraCredit);
+	public Assignment(String name, String category, String dateAssigned, String dateDue, String note, String maxScore,
+			double weight, double score, boolean isExtraCredit) {
+		setName(name);
+		setCategory(category);
+		setDateAssigned(dateAssigned);
+		setDateDue(dateDue);
+		setNote(note);
+		setWeight(weight);
+		setScore(score);
+		setMaxScore(maxScore);
+		setExtraCredit(isExtraCredit);
+	}
+
+	public Assignment() {
+		setName("");
+		setCategory("");
+		setDateAssigned("");
+		setDateDue("");
+		setNote("");
+		setScore(Double.NaN);
+		setWeight(Double.NaN);
+		setMaxScore("");
+		setExtraCredit(false);
 	}
 
 	/**
 	 * @return A JsonObject with the consolidated data in this assignment.
 	 */
 	public JsonObject getJsonData() {
-		return new JsonObject().add("name", name)
-				.add("category", category)
-				.add("dateAssigned", dateAssigned)
-				.add("dateDue", dateDue)
-				.add("score", score)
-				.add("weight", weight)
-				.add("maxScore", maxScore)
-				.add("extraCredit", isExtraCredit);
+		return new JsonObject().add("name", name).add("category", category).add("dateAssigned", dateAssigned)
+				.add("dateDue", dateDue).add("score", score).add("weight", weight).add("maxScore", maxScore)
+				.add("extraCredit", isExtraCredit).add("note", getNote());
 	}
 
 	public String getName() {
@@ -103,7 +112,19 @@ public class Assignment {
 		return maxScore;
 	}
 
-	public void setMaxScore(double maxScore) {
-		this.maxScore = maxScore;
+	public void setMaxScore(String maxScore) {
+		try {
+			this.maxScore = Double.parseDouble(maxScore);
+		} catch (NumberFormatException e) {
+			this.maxScore = Double.NaN;
+		}
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
 	}
 }
