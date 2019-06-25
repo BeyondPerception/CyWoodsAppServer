@@ -63,10 +63,14 @@ public class GradeServlet extends HttpServlet {
 		}
 
 		String username = user_encoded;
-		String password = user_encoded;
+		String password = pass_encoded;
 
 		GradeFetcher grades = new GradeFetcher(username, password);
-		grades.populateStudent();
-		pw.println(grades.returnStudent().getJsonData().format());
+		String ret = grades.populateStudent();
+		if (ret.contains("false")) {
+			pw.println(ret);
+		} else {
+			pw.println(grades.returnStudent().getJsonData().format());
+		}
 	}
 }
