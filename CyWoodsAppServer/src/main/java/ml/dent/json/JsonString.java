@@ -26,6 +26,9 @@ public class JsonString implements JsonValue {
 
 	@Override
 	public String toString() {
+		if (value == null) {
+			return new JsonNull().toString();
+		}
 		StringBuilder sb = new StringBuilder();
 		sb.append('\"').append(value).append('\"');
 		return sb.toString();
