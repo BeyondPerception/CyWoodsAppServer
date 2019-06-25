@@ -71,6 +71,11 @@ public class GradeFetcher {
 
 	public String populateStudent() {
 		String loginRet = login();
+
+		if (loginRet.contains("false")) {
+			return loginRet;
+		}
+
 		if (testUser) {
 			return loginRet;
 		}
