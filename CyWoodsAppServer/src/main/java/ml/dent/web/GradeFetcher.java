@@ -9,6 +9,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import ml.dent.object.Assignment;
+import ml.dent.object.Class;
 import ml.dent.object.Student;
 import ml.dent.object.Teacher;
 import ml.dent.util.Default;
@@ -48,12 +50,6 @@ public class GradeFetcher {
 	private boolean testUser;
 
 	/**
-	 * A 1 indexed number from 1-4 so we can get the assignments for a specific
-	 * class later.
-	 */
-	private int quarter;
-
-	/**
 	 * The username and password must be passed to the grade fetcher, otherwise it
 	 * can't do anything. These parameters are already decrypted, as all the
 	 * security in transferring information should be done within the servlet.
@@ -61,7 +57,6 @@ public class GradeFetcher {
 	public GradeFetcher(String username, String password) {
 		currentUser = new Student(username, password);
 		testUser = false;
-		quarter = 1;
 	}
 
 	/**
@@ -80,6 +75,7 @@ public class GradeFetcher {
 			return loginRet;
 		}
 		String weekViewRet = fetchWeekView();
+		String assignRet = fetchAssignments();
 
 		return loginRet;
 	}
@@ -139,18 +135,27 @@ public class GradeFetcher {
 			String studentName = weekView.select("li.sg-banner-menu-element:nth-child(1) > span:nth-child(1)").text();
 			currentUser.setName(studentName);
 
-			Element classTable = weekView.select(".sg-asp-table > tbody:nth-child(2)").first();
+			Element classTable = weekView.selectFirst(".sg-asp-table > tbody:nth-child(2)");
 			Elements rows = classTable.select("tr");
 
 			for (Element row : rows) {
 				// Course and staff information
-				String courseName = row.getElementById("courseName").text();
+				Element courseInfo = row.getElementById("courseName");
+				String courseName = courseInfo.text();
+
 				if (currentUser.getClass(courseName) != null) {
 					// You've probable seen it before, but HAC sometimes does this really dumb thing
-					// where it had duplicate classes around certain periods like lunch. So if the
+					// where it has duplicate classes around certain periods like lunch. So if the
 					// class already exists, skip this row.
 					continue;
 				}
+
+				int jsIndex = courseInfo.toString().indexOf("ViewClassPopUp(") + ("ViewClassPopUp(".length());
+				String courseId = courseInfo.toString().substring(jsIndex, courseInfo.toString().indexOf(",", jsIndex));
+				int courseIndex = courseInfo.toString().indexOf(courseId);
+				String quarter = courseInfo.toString().substring(courseIndex + courseId.length() + 2,
+						courseIndex + courseId.length() + 3); // One character that is the quarter number;
+
 				String teacherName = row.getElementById("staffName").text();
 				String teacherEmail = row.getElementById("staffName").toString();
 				teacherEmail = teacherEmail.substring(teacherEmail.indexOf(":") + 1);
@@ -159,6 +164,8 @@ public class GradeFetcher {
 				// Adding course and staff info to user
 				currentUser.addClass(courseName);
 				currentUser.getClass(courseName).setTeacher(new Teacher(teacherName, teacherEmail));
+				currentUser.getClass(courseName).setHAC_id(Integer.parseInt(courseId));
+				currentUser.getClass(courseName).setQuarter(Integer.parseInt(quarter));
 
 				String average = row.getElementById("average").text();
 				if (!average.isEmpty()) {
@@ -174,11 +181,80 @@ public class GradeFetcher {
 		return Default.OK("");
 	}
 
+	/**
+	 * Precondition for running this method is that fetchWeekView has been ran and
+	 * that classes for the student have been initialized.
+	 */
+	private String fetchAssignments() {
+		for (String className : currentUser.getClassList()) {
+			Class curClass = currentUser.getClass(className);
+			try {
+				Document assignmentList = getDocument(assignmentURL(curClass.getHAC_id(), curClass.getQuarter()));
+				// Select all elements within assignment table
+				Elements table = assignmentList
+						.select("#plnMain_rptAssigmnetsByCourse_dgCourseAssignments_0 > tbody:nth-child(1)")
+						.select("tr");
+
+				for (Element assign : table) {
+					if (assign.selectFirst("td:nth-child(1)").text().equals("Date Due")) {
+						// First element in table which is header
+						continue;
+					}
+					String dateDue = assign.selectFirst("td:nth-child(1)").text();
+					String dateAssigned = assign.selectFirst("td:nth-child(2)").text();
+					String name = assign.selectFirst("td:nth-child(3)").text();
+					String category = assign.selectFirst("td:nth-child(4)").text();
+					String score = assign.selectFirst("td:nth-child(5)").ownText(); // So it doesn't pick up the note
+					String note;
+					try {
+						note = assign.selectFirst("td:nth-child(5) > span:nth-child(1) > img:nth-child(1)")
+								.attr("title");
+					} catch (NullPointerException e1) {
+						// Not all assignments have notes
+						note = null;
+					}
+					String weight = assign.selectFirst("td:nth-child(6)").text();
+					String maxScore = assign.selectFirst("td:nth-child(8)").text();
+					String isExtraCredit = assign.selectFirst("td:nth-child(10)").text();
+
+					if (isExtraCredit.toLowerCase().replaceAll(" ", "").contains("extracredit")) {
+						isExtraCredit = "true";
+					} else {
+						isExtraCredit = "false";
+					}
+
+					// Adding the fetched elements to an Assignment
+					Assignment cur = new Assignment();
+					cur.setDateDue(dateDue);
+					cur.setDateAssigned(dateAssigned);
+					cur.setName(name);
+					cur.setCategory(category);
+					cur.setScore(Double.parseDouble(score));
+					cur.setNote(note);
+					cur.setWeight(Double.parseDouble(weight));
+					cur.setMaxScore(maxScore);
+					cur.setExtraCredit(Boolean.parseBoolean(isExtraCredit));
+
+					// Adding Assignment to Student;
+					curClass.addAssign(cur);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+				return Default.BadGateway("HAC might be down");
+			}
+		}
+		return Default.OK("");
+	}
+
 	private Document getDocument(String url) throws IOException {
 		return Jsoup.connect(url).cookie(".AuthCookie", authCookie).cookie("ASP.NET_SessionId", sessionID).get();
 	}
 
-	private String assignmentURL(String id) {
+	/**
+	 * Way easier and more accurate to parse from here than from Week View or
+	 * Classes; Classes is sketch
+	 */
+	private String assignmentURL(int id, int quarter) {
 		return new StringBuilder().append(
 				"https://home-access.cfisd.net/HomeAccess/Content/Student/AssignmentsFromRCPopUp.aspx?section_key=")
 				.append(id).append("&course_session=1&RC_RUN=").append(quarter)
