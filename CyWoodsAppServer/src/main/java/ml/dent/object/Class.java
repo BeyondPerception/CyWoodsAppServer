@@ -7,27 +7,28 @@ import ml.dent.json.JsonObject;
 
 public class Class {
 	private String name;
-	private String teacher;
+	private Teacher teacher;
 	private ArrayList<Assignment> assigns;
 	private double grade;
+	private int HAC_id; // For use in navigating HAC; should not be sent to client
 
 	public Class() {
 		setName("");
-		setTeacher("");
+		setTeacher(new Teacher());
 		setGrade(Double.NaN);
 		setAssigns(new ArrayList<Assignment>());
 	}
 
 	public Class(String n) {
 		setName(n);
-		setTeacher("");
+		setTeacher(new Teacher());
 		setGrade(Double.NaN);
 		setAssigns(new ArrayList<Assignment>());
 	}
 
 	public Class(String n, String t, ArrayList<Assignment> a) {
 		setName(n);
-		setTeacher(t);
+		setTeacher(new Teacher());
 		setGrade(Double.NaN);
 		setAssigns(a);
 	}
@@ -43,7 +44,8 @@ public class Class {
 	}
 
 	public JsonObject getJsonData() {
-		JsonObject res = new JsonObject().add("name", name).add("teacher", teacher).add("grade", getGrade());
+		JsonObject res = new JsonObject().add("name", name).add("teacher", teacher.getJsonData()).add("grade",
+				getGrade());
 		JsonArray assignments = new JsonArray();
 		for (Assignment a : assigns) {
 			assignments.add(a.getJsonData());
@@ -60,11 +62,11 @@ public class Class {
 		this.name = name;
 	}
 
-	public String getTeacher() {
+	public Teacher getTeacher() {
 		return teacher;
 	}
 
-	public void setTeacher(String teacher) {
+	public void setTeacher(Teacher teacher) {
 		this.teacher = teacher;
 	}
 
@@ -86,5 +88,13 @@ public class Class {
 
 	public void addAssign(Assignment a) {
 		assigns.add(a);
+	}
+
+	public int getHAC_id() {
+		return HAC_id;
+	}
+
+	public void setHAC_id(int hAC_id) {
+		HAC_id = hAC_id;
 	}
 }
