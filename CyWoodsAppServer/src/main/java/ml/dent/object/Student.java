@@ -28,6 +28,7 @@ public class Student {
 	public Student(String username, String password) {
 		this.username = username;
 		this.password = password;
+		classes = new LinkedHashMap<>();
 	}
 
 	public Student(String name, String username, String password) {
@@ -84,7 +85,10 @@ public class Student {
 	}
 
 	public void addClass(String s) {
-		classes.put(s, new Class());
+		classes.put(s, new Class(s));
 	}
 
+	public Class getClass(String s) {
+		return classes.get(s);
+	}
 }
