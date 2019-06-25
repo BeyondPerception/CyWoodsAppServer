@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ml.dent.util.Default;
+import ml.dent.web.GradeFetcher;
 
 /**
  * The frontend will send an HTTP request to this servlet at the above endpoint
@@ -64,6 +65,8 @@ public class GradeServlet extends HttpServlet {
 		String username = user_encoded;
 		String password = user_encoded;
 
-		pw.println(Default.OK(""));
+		GradeFetcher grades = new GradeFetcher(username, password);
+		grades.populateStudent();
+		pw.println(grades.returnStudent().getJsonData().format());
 	}
 }
