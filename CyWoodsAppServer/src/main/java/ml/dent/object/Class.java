@@ -10,13 +10,16 @@ public class Class {
 	private Teacher teacher;
 	private ArrayList<Assignment> assigns;
 	private double grade;
-	private int HAC_id; // For use in navigating HAC; should not be sent to client
+	// For use in navigating HAC; should not be sent to client
+	private int HAC_id;
+	private int quarter; // just in case quarters vary between classes.
 
 	public Class() {
 		setName("");
 		setTeacher(new Teacher());
 		setGrade(Double.NaN);
 		setAssigns(new ArrayList<Assignment>());
+		setQuarter(1);
 	}
 
 	public Class(String n) {
@@ -24,6 +27,7 @@ public class Class {
 		setTeacher(new Teacher());
 		setGrade(Double.NaN);
 		setAssigns(new ArrayList<Assignment>());
+		setQuarter(1);
 	}
 
 	public Class(String n, String t, ArrayList<Assignment> a) {
@@ -31,6 +35,7 @@ public class Class {
 		setTeacher(new Teacher());
 		setGrade(Double.NaN);
 		setAssigns(a);
+		setQuarter(1);
 	}
 
 	/**
@@ -44,8 +49,8 @@ public class Class {
 	}
 
 	public JsonObject getJsonData() {
-		JsonObject res = new JsonObject().add("name", name).add("teacher", teacher.getJsonData()).add("grade",
-				getGrade());
+		JsonObject res = new JsonObject().add("name", name).add("grade", getGrade()).add("teacher",
+				teacher.getJsonData());
 		JsonArray assignments = new JsonArray();
 		for (Assignment a : assigns) {
 			assignments.add(a.getJsonData());
@@ -96,5 +101,13 @@ public class Class {
 
 	public void setHAC_id(int hAC_id) {
 		HAC_id = hAC_id;
+	}
+
+	public int getQuarter() {
+		return quarter;
+	}
+
+	public void setQuarter(int quarter) {
+		this.quarter = quarter;
 	}
 }
