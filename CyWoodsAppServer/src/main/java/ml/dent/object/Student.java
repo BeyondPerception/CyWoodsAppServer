@@ -1,6 +1,7 @@
 package ml.dent.object;
 
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 import ml.dent.json.JsonArray;
 import ml.dent.json.JsonObject;
@@ -90,5 +91,9 @@ public class Student {
 
 	public Class getClass(String s) {
 		return classes.get(s);
+	}
+
+	public Set<String> getClassList() {
+		return classes.keySet();
 	}
 }
