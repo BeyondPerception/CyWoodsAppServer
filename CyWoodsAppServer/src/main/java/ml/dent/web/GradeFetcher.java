@@ -31,7 +31,6 @@ public class GradeFetcher {
 	private static final String HAC_SCHEDULE_URL = "https://home-access.cfisd.net/HomeAccess/Home/WeekView";
 	private static final String HAC_TRANSCIRPT_URL = "https://home-access.cfisd.net/HomeAccess/Grades/Transcript";
 	private static final String HAC_ATTENDANCE_URL = "https://home-access.cfisd.net/HomeAccess/Content/Attendance/MonthlyView.aspx";
-	private static final String HAC_ASSIGNMENTS_URL = "https://home-access.cfisd.net/HomeAccess/Content/Student/Assignments.aspx";
 	private static final String HAC_REPORTCARD_URL = "https://home-access.cfisd.net/HomeAccess/Content/Student/ReportCards.aspx";
 
 	// Cookies and such
