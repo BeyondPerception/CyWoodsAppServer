@@ -90,7 +90,7 @@ public class GradeFetcher {
 	 * 
 	 * @return true if the login was successful, false otherwise.
 	 */
-	public String login() {
+	private String login() {
 		if (currentUser.getUsername().equals("s0") && currentUser.getPassword().equals("testing")) {
 			// These are arbitrary logins that don't actually exist, but can be used to test
 			// stuff on the client side without actually changing anything on the client to
@@ -128,7 +128,7 @@ public class GradeFetcher {
 	 * Grabs everything it can from the WeekView on Home Access. Not assignments
 	 * though. Assignments are easier to get from another page.
 	 */
-	public String fetchWeekView() {
+	private String fetchWeekView() {
 		try {
 			// We use URLS to navigate HAC because faking clicks is sketchy
 			Document weekView = getDocument(HAC_SCHEDULE_URL);
@@ -233,7 +233,7 @@ public class GradeFetcher {
 					cur.setDateAssigned(dateAssigned);
 					cur.setName(name);
 					cur.setCategory(category);
-					cur.setScore(Double.parseDouble(score));
+					cur.setScore(score);
 					cur.setNote(note);
 					cur.setWeight(Double.parseDouble(weight));
 					cur.setMaxScore(maxScore);
@@ -246,6 +246,23 @@ public class GradeFetcher {
 				e.printStackTrace();
 				return Default.BadGateway("HAC might be down");
 			}
+		}
+		return Default.OK("");
+	}
+
+	private String fetchTranscript() {
+		try {
+			Document transView = getDocument(HAC_TRANSCIRPT_URL);
+			Elements yearTable = transView.select(".sg-content-grid > table:nth-child(2) > tbody:nth-child(1)")
+					.select("tr");
+
+			for (Element row : yearTable) {
+
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return Default.BadGateway("");
 		}
 		return Default.OK("");
 	}

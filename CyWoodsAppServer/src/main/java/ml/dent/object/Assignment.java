@@ -8,7 +8,7 @@ public class Assignment {
 	private String dateAssigned;
 	private String dateDue;
 	private String note;
-	private double score;
+	private String score;
 	private double weight;
 	private double maxScore;
 	private boolean isExtraCredit;
@@ -19,7 +19,7 @@ public class Assignment {
 	 * re-instantiated every time the user refreshes.
 	 */
 	public Assignment(String name, String category, String dateAssigned, String dateDue, String note, String maxScore,
-			double weight, double score, boolean isExtraCredit) {
+			double weight, String score, boolean isExtraCredit) {
 		setName(name);
 		setCategory(category);
 		setDateAssigned(dateAssigned);
@@ -37,7 +37,7 @@ public class Assignment {
 		setDateAssigned("");
 		setDateDue("");
 		setNote("");
-		setScore(Double.NaN);
+		setScore("");
 		setWeight(Double.NaN);
 		setMaxScore("");
 		setExtraCredit(false);
@@ -84,11 +84,11 @@ public class Assignment {
 		this.dateDue = dateDue;
 	}
 
-	public double getScore() {
+	public String getScore() {
 		return score;
 	}
 
-	public void setScore(double score) {
+	public void setScore(String score) {
 		this.score = score;
 	}
 
