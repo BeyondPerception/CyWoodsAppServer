@@ -71,17 +71,29 @@ public class GradeFetcher {
 	public String populateStudent() {
 		String loginRet = login();
 
-		if (loginRet.contains("false")) {
+		if (loginRet != null) {
 			return loginRet;
 		}
 
 		if (testUser) {
 			return loginRet;
 		}
-		String weekViewRet = fetchWeekView();
-		String assignRet = fetchAssignments();
+		try {
+			fetchWeekView();
+		} catch (IOException e) {
+			System.err.println("Failed to fetch week view");
+			e.printStackTrace();
+			return Default.BadGateway("HAC might be down");
+		}
+		try {
+			fetchAssignments();
+		} catch (IOException e) {
+			System.err.println("Failed to fetch assignments");
+			e.printStackTrace();
+			return Default.BadGateway("HAC might be down");
+		}
 
-		return loginRet;
+		return Default.OK("");
 	}
 
 	/**
@@ -121,150 +133,129 @@ public class GradeFetcher {
 			return Default.BadGateway("Home Access might be down");
 		}
 
-		return Default.OK("");
+		return null;
 	}
 
 	/**
 	 * Grabs everything it can from the WeekView on Home Access. Not assignments
 	 * though. Assignments are easier to get from another page.
 	 */
-	private String fetchWeekView() {
-		try {
-			// We use URLS to navigate HAC because faking clicks is sketchy
-			Document weekView = getDocument(HAC_SCHEDULE_URL);
+	private void fetchWeekView() throws IOException {
+		// We use URLS to navigate HAC because faking clicks is sketchy
+		Document weekView = getDocument(HAC_SCHEDULE_URL);
 
-			// This may seem very specific, but getting exact CSS selectors like this is
-			// really easy. Firefox(which you should be using) has a handy tool that allows
-			// you to right click an element in inspect element and copy the CSS Selector
-			String studentName = weekView.select("li.sg-banner-menu-element:nth-child(1) > span:nth-child(1)").text();
-			currentUser.setName(studentName);
+		// This may seem very specific, but getting exact CSS selectors like this is
+		// really easy. Firefox(which you should be using) has a handy tool that allows
+		// you to right click an element in inspect element and copy the CSS Selector
+		String studentName = weekView.select("li.sg-banner-menu-element:nth-child(1) > span:nth-child(1)").text();
+		currentUser.setName(studentName);
 
-			Element classTable = weekView.selectFirst(".sg-asp-table > tbody:nth-child(2)");
-			Elements rows = classTable.select("tr");
+		Element classTable = weekView.selectFirst(".sg-asp-table > tbody:nth-child(2)");
+		Elements rows = classTable.select("tr");
 
-			for (Element row : rows) {
-				// Course and staff information
-				Element courseInfo = row.getElementById("courseName");
-				String courseName = courseInfo.text();
+		for (Element row : rows) {
+			// Course and staff information
+			Element courseInfo = row.getElementById("courseName");
+			String courseName = courseInfo.text();
 
-				if (currentUser.getClass(courseName) != null) {
-					// You've probable seen it before, but HAC sometimes does this really dumb thing
-					// where it has duplicate classes around certain periods like lunch. So if the
-					// class already exists, skip this row.
-					continue;
-				}
-
-				int jsIndex = courseInfo.toString().indexOf("ViewClassPopUp(") + ("ViewClassPopUp(".length());
-				String courseId = courseInfo.toString().substring(jsIndex, courseInfo.toString().indexOf(",", jsIndex));
-				int courseIndex = courseInfo.toString().indexOf(courseId);
-				String quarter = courseInfo.toString().substring(courseIndex + courseId.length() + 2,
-						courseIndex + courseId.length() + 3); // One character that is the quarter number;
-
-				String teacherName = row.getElementById("staffName").text();
-				String teacherEmail = row.getElementById("staffName").toString();
-				teacherEmail = teacherEmail.substring(teacherEmail.indexOf(":") + 1);
-				teacherEmail = teacherEmail.substring(0, teacherEmail.indexOf("\""));
-
-				// Adding course and staff info to user
-				currentUser.addClass(courseName);
-				currentUser.getClass(courseName).setTeacher(new Teacher(teacherName, teacherEmail));
-				currentUser.getClass(courseName).setHAC_id(Integer.parseInt(courseId));
-				currentUser.getClass(courseName).setQuarter(Integer.parseInt(quarter));
-
-				String average = row.getElementById("average").text();
-				if (!average.isEmpty()) {
-					// For lunch and stuff
-					currentUser.getClass(courseName).setGrade(Double.parseDouble(average));
-				}
+			if (currentUser.getClass(courseName) != null) {
+				// You've probable seen it before, but HAC sometimes does this really dumb thing
+				// where it has duplicate classes around certain periods like lunch. So if the
+				// class already exists, skip this row.
+				continue;
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			return Default.BadGateway("Failed to get week view after login");
-		}
 
-		return Default.OK("");
+			int jsIndex = courseInfo.toString().indexOf("ViewClassPopUp(") + ("ViewClassPopUp(".length());
+			String courseId = courseInfo.toString().substring(jsIndex, courseInfo.toString().indexOf(",", jsIndex));
+			int courseIndex = courseInfo.toString().indexOf(courseId);
+			String quarter = courseInfo.toString().substring(courseIndex + courseId.length() + 2,
+					courseIndex + courseId.length() + 3); // One character that is the quarter number;
+
+			String teacherName = row.getElementById("staffName").text();
+			String teacherEmail = row.getElementById("staffName").toString();
+			teacherEmail = teacherEmail.substring(teacherEmail.indexOf(":") + 1);
+			teacherEmail = teacherEmail.substring(0, teacherEmail.indexOf("\""));
+
+			// Adding course and staff info to user
+			currentUser.addClass(courseName);
+			currentUser.getClass(courseName).setTeacher(new Teacher(teacherName, teacherEmail));
+			currentUser.getClass(courseName).setHAC_id(Integer.parseInt(courseId));
+			currentUser.getClass(courseName).setQuarter(Integer.parseInt(quarter));
+
+			String average = row.getElementById("average").text();
+			if (!average.isEmpty()) {
+				// For lunch and stuff
+				currentUser.getClass(courseName).setGrade(Double.parseDouble(average));
+			}
+		}
 	}
 
 	/**
 	 * Precondition for running this method is that fetchWeekView has been ran and
 	 * that classes for the student have been initialized.
 	 */
-	private String fetchAssignments() {
+	private void fetchAssignments() throws IOException {
 		for (String className : currentUser.getClassList()) {
 			Class curClass = currentUser.getClass(className);
-			try {
-				Document assignmentList = getDocument(assignmentURL(curClass.getHAC_id(), curClass.getQuarter()));
-				// Select all elements within assignment table
-				Elements table = assignmentList
-						.select("#plnMain_rptAssigmnetsByCourse_dgCourseAssignments_0 > tbody:nth-child(1)")
-						.select("tr");
+			Document assignmentList = getDocument(assignmentURL(curClass.getHAC_id(), curClass.getQuarter()));
+			// Select all elements within assignment table
+			Elements table = assignmentList
+					.select("#plnMain_rptAssigmnetsByCourse_dgCourseAssignments_0 > tbody:nth-child(1)").select("tr");
 
-				for (Element assign : table) {
-					if (assign.selectFirst("td:nth-child(1)").text().equals("Date Due")) {
-						// First element in table which is header
-						continue;
-					}
-					String dateDue = assign.selectFirst("td:nth-child(1)").text();
-					String dateAssigned = assign.selectFirst("td:nth-child(2)").text();
-					String name = assign.selectFirst("td:nth-child(3)").text();
-					String category = assign.selectFirst("td:nth-child(4)").text();
-					String score = assign.selectFirst("td:nth-child(5)").ownText(); // So it doesn't pick up the note
-					String note;
-					try {
-						note = assign.selectFirst("td:nth-child(5) > span:nth-child(1) > img:nth-child(1)")
-								.attr("title");
-					} catch (NullPointerException e1) {
-						// Not all assignments have notes
-						note = null;
-					}
-					String weight = assign.selectFirst("td:nth-child(6)").text();
-					String maxScore = assign.selectFirst("td:nth-child(8)").text();
-					String isExtraCredit = assign.selectFirst("td:nth-child(10)").text();
-
-					if (isExtraCredit.toLowerCase().replaceAll(" ", "").contains("extracredit")) {
-						isExtraCredit = "true";
-					} else {
-						isExtraCredit = "false";
-					}
-
-					// Adding the fetched elements to an Assignment
-					Assignment cur = new Assignment();
-					cur.setDateDue(dateDue);
-					cur.setDateAssigned(dateAssigned);
-					cur.setName(name);
-					cur.setCategory(category);
-					cur.setScore(score);
-					cur.setNote(note);
-					cur.setWeight(Double.parseDouble(weight));
-					cur.setMaxScore(maxScore);
-					cur.setExtraCredit(Boolean.parseBoolean(isExtraCredit));
-
-					// Adding Assignment to Student;
-					curClass.addAssign(cur);
+			for (Element assign : table) {
+				if (assign.selectFirst("td:nth-child(1)").text().equals("Date Due")) {
+					// First element in table which is header
+					continue;
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
-				return Default.BadGateway("HAC might be down");
+				String dateDue = assign.selectFirst("td:nth-child(1)").text();
+				String dateAssigned = assign.selectFirst("td:nth-child(2)").text();
+				String name = assign.selectFirst("td:nth-child(3)").text();
+				String category = assign.selectFirst("td:nth-child(4)").text();
+				String score = assign.selectFirst("td:nth-child(5)").ownText(); // So it doesn't pick up the note
+				String note;
+				try {
+					note = assign.selectFirst("td:nth-child(5) > span:nth-child(1) > img:nth-child(1)").attr("title");
+				} catch (NullPointerException e1) {
+					// Not all assignments have notes
+					note = null;
+				}
+				String weight = assign.selectFirst("td:nth-child(6)").text();
+				String maxScore = assign.selectFirst("td:nth-child(8)").text();
+				String isExtraCredit = assign.selectFirst("td:nth-child(10)").text();
+
+				if (isExtraCredit.toLowerCase().replaceAll(" ", "").contains("extracredit")) {
+					isExtraCredit = "true";
+				} else {
+					isExtraCredit = "false";
+				}
+
+				// Adding the fetched elements to an Assignment
+				Assignment cur = new Assignment();
+				cur.setDateDue(dateDue);
+				cur.setDateAssigned(dateAssigned);
+				cur.setName(name);
+				cur.setCategory(category);
+				cur.setScore(score);
+				cur.setNote(note);
+				cur.setWeight(Double.parseDouble(weight));
+				cur.setMaxScore(maxScore);
+				cur.setExtraCredit(Boolean.parseBoolean(isExtraCredit));
+
+				// Adding Assignment to Student;
+				curClass.addAssign(cur);
 			}
 		}
-		return Default.OK("");
 	}
 
-	private String fetchTranscript() {
-		try {
-			Document transView = getDocument(HAC_TRANSCIRPT_URL);
-			Elements yearTable = transView.select(".sg-content-grid > table:nth-child(2) > tbody:nth-child(1)")
-					.select("tr");
+	private void fetchTranscript() throws IOException {
+		Document transView = getDocument(HAC_TRANSCIRPT_URL);
+		Elements yearTable = transView.select(".sg-content-grid > table:nth-child(2) > tbody:nth-child(1)")
+				.select("tr");
 
-			for (Element row : yearTable) {
+		for (Element row : yearTable) {
 
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			return Default.BadGateway("");
 		}
-		return Default.OK("");
+
 	}
 
 	private Document getDocument(String url) throws IOException {
