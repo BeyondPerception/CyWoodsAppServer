@@ -233,7 +233,7 @@ public class GradeFetcher {
 				Assignment cur = new Assignment();
 				cur.setDateDue(dateDue);
 				cur.setDateAssigned(dateAssigned);
-				cur.setName(name);
+				cur.setName(name.substring(0, name.length() - 2)); // Getting rid of weird "*" at the end of all classes
 				cur.setCategory(category);
 				cur.setScore(score);
 				cur.setNote(note);
