@@ -42,10 +42,10 @@ public class Default {
 	
 	public static String NotAcceptable(String message) {
 		return new JsonObject().add("success", false)
-		.add("code", 406)
-		.add("description", "Not Acceptable")
-		.add("message", message)
-		.format();
+				.add("code", 406)
+				.add("description", "Not Acceptable")
+				.add("message", message)
+				.format();
 	}
 	
 	public static String OK(String message) {
@@ -55,4 +55,13 @@ public class Default {
 				.add("message", message)
 				.format();
 	}
+
+	public static String InternalServerError(String message) {
+		return new JsonObject().add("success", false)
+				.add("code", 500)
+				.add("description", "Internal Server Error")
+				.add("message", message)
+				.format();
+	}
+	
 }
