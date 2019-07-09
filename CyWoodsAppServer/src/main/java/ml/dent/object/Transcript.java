@@ -39,7 +39,7 @@ public class Transcript {
 	 * Each block is representative of a single year of schooling on the transcript,
 	 * the "blocks" you see on the transcript page on HAC is the same block here.
 	 */
-	private class Block {
+	public class Block {
 		private String year;
 		private String building;
 		private int grade;
@@ -69,7 +69,7 @@ public class Transcript {
 		 * Again on the Transcript page on HAC, a row in one of the blocks is
 		 * represented by this class.
 		 */
-		private class Course {
+		public class Course {
 			private String name;
 			private String courseNum;
 			private double sem1; // This is really an int, but it may not exist.

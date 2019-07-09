@@ -24,7 +24,7 @@ import ml.dent.util.Default;
  * 
  * @author Ronak Maik
  */
-public class GradeFetcher {
+public class StudentFetcher {
 
 	// Home Access Center URLS that we will be parsing.
 	private static final String HAC_LOGIN_URL = "https://home-access.cfisd.net/HomeAccess/Account/LogOn";
@@ -53,7 +53,7 @@ public class GradeFetcher {
 	 * can't do anything. These parameters are already decrypted, as all the
 	 * security in transferring information should be done within the servlet.
 	 */
-	public GradeFetcher(String username, String password) {
+	public StudentFetcher(String username, String password) {
 		currentUser = new Student(username, password);
 		testUser = false;
 	}

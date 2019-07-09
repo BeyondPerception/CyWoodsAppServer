@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ml.dent.util.Default;
-import ml.dent.web.GradeFetcher;
+import ml.dent.web.StudentFetcher;
 
 /**
  * The frontend will send an HTTP request to this servlet at the above endpoint
@@ -19,11 +19,11 @@ import ml.dent.web.GradeFetcher;
  * 
  * @author Ronak Malik
  */
-@WebServlet("/Grades")
-public class GradeServlet extends HttpServlet {
+@WebServlet("/Student")
+public class StudentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	public GradeServlet() {
+	public StudentServlet() {
 		super();
 	}
 
@@ -65,7 +65,7 @@ public class GradeServlet extends HttpServlet {
 		String username = user_encoded;
 		String password = pass_encoded;
 
-		GradeFetcher grades = new GradeFetcher(username, password);
+		StudentFetcher grades = new StudentFetcher(username, password);
 		String ret = grades.populateStudent();
 		if (ret.contains("false")) {
 			pw.println(ret);
