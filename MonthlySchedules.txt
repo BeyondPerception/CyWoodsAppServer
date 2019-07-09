@@ -1,0 +1,116 @@
+#This is the master file that stores all the schedules for the current month
+#Don't make comments, this is cheating
+#Don't edit this file directly, you'll probably mess it up, use the CLI tool
+
+INDEX
+31 28-29 31 30 31 30 31 31 30 31 30 31
+
+07/01
+second
+
+07/02
+second
+
+07/03
+standard
+
+07/04
+seventh
+
+07/05
+standard
+
+07/06
+second
+
+07/07
+seventh
+
+07/08
+second
+
+07/09
+custom
+1 7:20 8:12
+2 8:16 9:20
+3 9:26 10:18
+LUNCH
+A
+4 10:24 11:16
+5 11:22 12:14
+B
+4 10:24 11:16
+5 11:22 12:14
+C
+4 10:24 11:16
+5 11:22 12:14
+END
+6 12:20 1:40
+7 1:46 2:40
+END
+
+07/10
+second
+
+07/11
+seventh
+
+07/12
+standard
+
+07/13
+second
+
+07/14
+standard
+
+07/15
+standard
+
+07/16
+standard
+
+07/17
+standard
+
+07/18
+standard
+
+07/19
+standard
+
+07/20
+standard
+
+07/21
+standard
+
+07/22
+standard
+
+07/23
+standard
+
+07/24
+standard
+
+07/25
+standard
+
+07/26
+standard
+
+07/27
+standard
+
+07/28
+standard
+
+07/29
+standard
+
+07/30
+standard
+
+07/31
+standard
