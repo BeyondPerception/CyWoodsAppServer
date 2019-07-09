@@ -67,8 +67,12 @@ public class ScheduleServlet extends HttpServlet {
 
 		JsonObject res = new JsonObject().add("date", currentDay);
 
+		// Parsing of the master schedule file
 		String type = file.nextLine();
 		switch (type) {
+			// If the types are one of the regulars, just send that, the client will know
+			// how to deal with it. These are most common, custom will very rarely happen,
+			// but it is necessary.
 			case "standard":
 				res.add("type", "standard");
 				break;
@@ -79,6 +83,8 @@ public class ScheduleServlet extends HttpServlet {
 				res.add("type", "seventh");
 				break;
 			case "custom":
+				// If you take a look at the master schedule file, this lump of code may kinda
+				// make sense. I tried to make it as intuitive as possible.
 				res.add("type", "custom");
 				JsonObject shed = new JsonObject();
 				String nextLine;
@@ -86,9 +92,22 @@ public class ScheduleServlet extends HttpServlet {
 					String[] line = nextLine.split(" ");
 					shed.add(line[0], new JsonArray().add(line[1], line[2]));
 				}
+				JsonObject lunch = new JsonObject();
 				while ((nextLine = file.nextLine()).equals("END")) {
 					String[] line = nextLine.split(" ");
+					if (line.length == 1) {
+						lunch = new JsonObject();
+						shed.add(line[0], lunch);
+					} else {
+						lunch.add(line[0], new JsonArray().add(line[1], line[2]));
+					}
 				}
+				while ((nextLine = file.nextLine()).equals("END")) {
+					String[] line = nextLine.split(" ");
+					shed.add(line[0], new JsonArray().add(line[1], line[2]));
+				}
+				res.add("schedule", shed);
+				break;
 		}
 
 		pw.println(res.format());
