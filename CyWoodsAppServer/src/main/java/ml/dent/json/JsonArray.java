@@ -1,6 +1,7 @@
 package ml.dent.json;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * A JsonArray is just a list of values. Values are any class that implements
@@ -51,6 +52,13 @@ public class JsonArray implements JsonValue {
 
 	public JsonArray add(String value) {
 		add(new JsonString(value));
+		return this;
+	}
+
+	public JsonArray add(String... values) {
+		for (String val : values) {
+			add(val);
+		}
 		return this;
 	}
 
