@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -68,7 +70,7 @@ public class ScheduleServlet extends HttpServlet {
 
 		String currentDay = day.replace("-", "/");
 
-		// This grounds the path in the real file
+		// This grounds the path in the real files
 		// system so we can use relative paths
 		// without the virtual context messing us up
 		// The schedule file must be in the user's home dir
@@ -92,6 +94,8 @@ public class ScheduleServlet extends HttpServlet {
 
 			JsonObject res = new JsonObject().add("date", currentDay);
 
+			String regex = "[^\\s\"']+|\"([^\"]*)\"|'([^']*)'";
+
 			// Parsing of the master schedule file
 			String type = file.nextLine();
 			switch (type) {
@@ -107,31 +111,50 @@ public class ScheduleServlet extends HttpServlet {
 				case "seventh":
 					res.add("type", "seventh");
 					break;
+				// If you take a look at the master schedule file, this lump of code may kinda
+				// make sense. I tried to make it as intuitive as possible.
 				case "custom":
-					// If you take a look at the master schedule file, this lump of code may kinda
-					// make sense. I tried to make it as intuitive as possible.
 					res.add("type", "custom");
+					res.add("name", file.nextLine());
 					JsonObject shed = new JsonObject();
 					String nextLine;
 					// Reads all periods until lunch begins (usually p.1-p.3)
 					while (!(nextLine = file.nextLine()).equals("LUNCH")) {
-						String[] line = nextLine.split(" ");
+						Pattern pattern = Pattern.compile(regex);
+						Matcher matcher = pattern.matcher(nextLine);
+						String[] line = new String[3];
+						for (int i = 0; i < 3 && matcher.find(); i++) {
+							line[i] = matcher.group();
+						}
+						line[0] = line[0].substring(1, line[0].length() - 1);
 						shed.add(line[0], new JsonArray().add(line[1], line[2]));
 					}
 					// Parsing the periods that change because of lunch (usually p.4-p.5)
 					JsonObject lunch = new JsonObject();
 					while (!(nextLine = file.nextLine()).equals("END")) {
-						String[] line = nextLine.split(" ");
-						if (line.length == 1) {
+						if (nextLine.length() == 1) {
 							lunch = new JsonObject();
-							shed.add(line[0], lunch);
+							shed.add(nextLine, lunch);
 						} else {
+							Pattern pattern = Pattern.compile(regex);
+							Matcher matcher = pattern.matcher(nextLine);
+							String[] line = new String[3];
+							for (int i = 0; i < 3 && matcher.find(); i++) {
+								line[i] = matcher.group();
+							}
+							line[0] = line[0].substring(1, line[0].length() - 1);
 							lunch.add(line[0], new JsonArray().add(line[1], line[2]));
 						}
 					}
 					// Reading the rest of the day (usually p.6-p.7)
 					while (!(nextLine = file.nextLine()).equals("END")) {
-						String[] line = nextLine.split(" ");
+						Pattern pattern = Pattern.compile(regex);
+						Matcher matcher = pattern.matcher(nextLine);
+						String[] line = new String[3];
+						for (int i = 0; i < 3 && matcher.find(); i++) {
+							line[i] = matcher.group();
+						}
+						line[0] = line[0].substring(1, line[0].length() - 1);
 						shed.add(line[0], new JsonArray().add(line[1], line[2]));
 					}
 					res.add("schedule", shed);
