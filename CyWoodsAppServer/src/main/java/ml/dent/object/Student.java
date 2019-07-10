@@ -30,6 +30,7 @@ public class Student {
 		this.username = username;
 		this.password = password;
 		classes = new LinkedHashMap<>();
+		transcript = new Transcript();
 	}
 
 	public Student(String name, String username, String password) {
@@ -37,6 +38,7 @@ public class Student {
 		this.setUsername(username);
 		this.setPassword(password);
 		classes = new LinkedHashMap<>();
+		transcript = new Transcript();
 	}
 
 	public Student(String name, String username, String password, LinkedHashMap<String, Class> classes) {
@@ -44,6 +46,7 @@ public class Student {
 		this.setUsername(username);
 		this.setPassword(password);
 		this.classes = classes;
+		transcript = new Transcript();
 	}
 
 	public JsonObject getJsonData() {
@@ -54,6 +57,7 @@ public class Student {
 			classArray.add(c.getJsonData());
 		}
 		res.add("classes", classArray);
+		res.add("transcript", transcript.getJsonData());
 		return res;
 	}
 
@@ -96,4 +100,9 @@ public class Student {
 	public Set<String> getClassList() {
 		return classes.keySet();
 	}
+
+	public Transcript getTranscript() {
+		return transcript;
+	}
+
 }
