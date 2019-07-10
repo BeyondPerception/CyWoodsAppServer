@@ -1,6 +1,7 @@
 package ml.dent.web;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
@@ -13,6 +14,8 @@ import ml.dent.object.Assignment;
 import ml.dent.object.Class;
 import ml.dent.object.Student;
 import ml.dent.object.Teacher;
+import ml.dent.object.Transcript.Block;
+import ml.dent.object.Transcript.Block.Course;
 import ml.dent.util.Default;
 
 /**
@@ -29,7 +32,7 @@ public class StudentFetcher {
 	// Home Access Center URLS that we will be parsing.
 	private static final String HAC_LOGIN_URL = "https://home-access.cfisd.net/HomeAccess/Account/LogOn";
 	private static final String HAC_SCHEDULE_URL = "https://home-access.cfisd.net/HomeAccess/Home/WeekView";
-	private static final String HAC_TRANSCIRPT_URL = "https://home-access.cfisd.net/HomeAccess/Grades/Transcript";
+	private static final String HAC_TRANSCIRPT_URL = "https://home-access.cfisd.net/HomeAccess/Content/Student/Transcript.aspx";
 	private static final String HAC_ATTENDANCE_URL = "https://home-access.cfisd.net/HomeAccess/Content/Attendance/MonthlyView.aspx";
 	private static final String HAC_REPORTCARD_URL = "https://home-access.cfisd.net/HomeAccess/Content/Student/ReportCards.aspx";
 
@@ -80,17 +83,25 @@ public class StudentFetcher {
 		}
 		try {
 			fetchWeekView();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.err.println("Failed to fetch week view");
 			e.printStackTrace();
-			return Default.BadGateway("HAC might be down");
+			return Default.BadGateway("Failed to fetch grades");
 		}
 		try {
 			fetchAssignments();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.err.println("Failed to fetch assignments");
 			e.printStackTrace();
-			return Default.BadGateway("HAC might be down");
+			return Default.BadGateway("Failed to fetch assignments");
+		}
+
+		try {
+			fetchTranscript();
+		} catch (Exception e) {
+			System.err.println("Failed to fetch transcript");
+			e.printStackTrace();
+			return Default.BadGateway("Failed to fetch transcript");
 		}
 
 		return Default.OK("");
@@ -252,10 +263,68 @@ public class StudentFetcher {
 		Elements yearTable = transView.select(".sg-content-grid > table:nth-child(2) > tbody:nth-child(1)")
 				.select("tr");
 
-		for (Element row : yearTable) {
+		for (int i = 0; i < yearTable.size() - 3; i++) {
+			Element row = yearTable.get(i);
+			Elements blocks = row.getElementsByClass("sg-transcript-group");
+			for (Element block : blocks) {
+				Elements tables = block.select("table");
 
+				Element info = tables.get(0);
+				Element coursesTable = tables.get(1);
+				Element totalCreditTable = tables.get(2);
+
+				Elements infoFirstRow = info.selectFirst("tbody").select("tr").first().select("td");
+				Elements infoSecondRow = info.selectFirst("tbody").select("tr").last().select("td");
+
+				String year = infoFirstRow.get(1).text();
+				String grade = infoFirstRow.get(5).text();
+				String building = infoSecondRow.get(1).text();
+
+				Elements coursesList = coursesTable.selectFirst("tbody").select("tr");
+				ArrayList<Course> courses = new ArrayList<>();
+
+				for (Element course : coursesList) {
+					Elements rowElements = course.select("td");
+
+					String courseNum = rowElements.get(0).text();
+					String description = rowElements.get(1).text();
+					String sem1 = rowElements.get(2).text();
+					String sem2 = rowElements.get(3).text();
+					String credit = rowElements.get(4).text();
+
+					if (courseNum.equals("Course")) {
+						continue;
+					}
+
+					try {
+						courses.add(new Course(description, courseNum, sem1, sem2, Double.parseDouble(credit)));
+					} catch (NumberFormatException e) {
+						courses.add(new Course(description, courseNum, sem1, sem2, Double.NaN));
+					}
+				}
+
+				String totalCredit = totalCreditTable.selectFirst("tbody").selectFirst("tr").select("td").get(3).text();
+
+				try {
+					currentUser.getTranscript()
+							.addBlock(new Block(year, building, grade, Double.parseDouble(totalCredit), courses));
+				} catch (NumberFormatException e) {
+					currentUser.getTranscript().addBlock(new Block(year, building, grade, Double.NaN, courses));
+				}
+			}
 		}
 
+		Elements gpaTable = transView.getElementById("plnMain_rpTranscriptGroup_trGPA1").select("td");
+
+		String gpa = gpaTable.get(1).text();
+		String rank = gpaTable.get(2).text();
+
+		currentUser.getTranscript().setRank(rank);
+		try {
+			currentUser.getTranscript().setGpa(Double.parseDouble(gpa));
+		} catch (NumberFormatException e) {
+			currentUser.getTranscript().setGpa(Double.NaN);
+		}
 	}
 
 	private Document getDocument(String url) throws IOException {
@@ -264,7 +333,7 @@ public class StudentFetcher {
 
 	/**
 	 * Way easier and more accurate to parse from here than from Week View or
-	 * Classes; Classes is sketch
+	 * Classes; Classes is sketch, don't use classes
 	 */
 	private String assignmentURL(int id, int quarter) {
 		return new StringBuilder().append(
