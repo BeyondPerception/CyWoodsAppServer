@@ -15,14 +15,12 @@ import ml.dent.json.JsonObject;
  */
 public class Transcript {
 	private double gpa; // This is really an int, but it may not exist.
-	private double rank; // This is really an int, but it may not exist.
-	private double total; // This is really an int, but it may not exist.
+	private String rank; // This is a string in the format of \d+/\d+
 	private ArrayList<Block> blocks;
 
 	public Transcript() {
-		gpa = Double.NaN;
-		rank = Double.NaN;
-		total = Double.NaN;
+		setGpa(Double.NaN);
+		setRank(null);
 		blocks = new ArrayList<>();
 	}
 
@@ -32,26 +30,54 @@ public class Transcript {
 			list.add(b.getJsonData());
 		}
 
-		return new JsonObject().add("gpa", gpa).add("rank", rank).add("totalPeople", total).add("years", list);
+		return new JsonObject().add("gpa", getGpa()).add("rank", getRank()).add("years", list);
+	}
+
+	public void addBlock(Block b) {
+		blocks.add(b);
+	}
+
+	public String getRank() {
+		return rank;
+	}
+
+	public void setRank(String rank) {
+		this.rank = rank;
+	}
+
+	public double getGpa() {
+		return gpa;
+	}
+
+	public void setGpa(double gpa) {
+		this.gpa = gpa;
 	}
 
 	/**
 	 * Each block is representative of a single year of schooling on the transcript,
 	 * the "blocks" you see on the transcript page on HAC is the same block here.
 	 */
-	public class Block {
+	public static class Block {
 		private String year;
 		private String building;
-		private int grade;
+		private String grade;
 		private double totalCredit;
 		private ArrayList<Course> courses;
 
 		public Block() {
 			year = null;
 			building = null;
-			grade = -1;
+			grade = null;
 			totalCredit = Double.NaN;
 			courses = new ArrayList<>();
+		}
+
+		public Block(String y, String b, String g, double tC, ArrayList<Course> c) {
+			year = y;
+			building = b;
+			grade = g;
+			totalCredit = tC;
+			courses = c;
 		}
 
 		public JsonObject getJsonData() {
@@ -69,32 +95,40 @@ public class Transcript {
 		 * Again on the Transcript page on HAC, a row in one of the blocks is
 		 * represented by this class.
 		 */
-		public class Course {
-			private String name;
+		public static class Course {
+			private String description;
 			private String courseNum;
-			private double sem1; // This is really an int, but it may not exist.
-			private double sem2; // This is really an int, but it may not exist.
+			private String sem1; // This is really an int, but it may not exist.
+			private String sem2; // This is really an int, but it may not exist.
 			private double credit;
 
 			public Course() {
 				setName(null);
 				setCourseNum(null);
-				setSem1(Double.NaN);
-				setSem2(Double.NaN);
+				setSem1(null);
+				setSem2(null);
 				setCredit(Double.NaN);
 			}
 
+			public Course(String name, String courseNum, String sem1, String sem2, double credit) {
+				setName(name);
+				setCourseNum(courseNum);
+				setSem1(sem1);
+				setSem2(sem2);
+				setCredit(credit);
+			}
+
 			public JsonObject getJsonData() {
-				return new JsonObject().add("course", courseNum).add("description", name).add("sem1", sem1)
+				return new JsonObject().add("course", courseNum).add("description", description).add("sem1", sem1)
 						.add("sem2", sem2).add("credit", credit);
 			}
 
 			public String getName() {
-				return name;
+				return description;
 			}
 
 			public void setName(String name) {
-				this.name = name;
+				this.description = name;
 			}
 
 			public String getCourseNum() {
@@ -105,19 +139,19 @@ public class Transcript {
 				this.courseNum = courseNum;
 			}
 
-			public double getSem1() {
+			public String getSem1() {
 				return sem1;
 			}
 
-			public void setSem1(double sem1) {
+			public void setSem1(String sem1) {
 				this.sem1 = sem1;
 			}
 
-			public double getSem2() {
+			public String getSem2() {
 				return sem2;
 			}
 
-			public void setSem2(double sem2) {
+			public void setSem2(String sem2) {
 				this.sem2 = sem2;
 			}
 
