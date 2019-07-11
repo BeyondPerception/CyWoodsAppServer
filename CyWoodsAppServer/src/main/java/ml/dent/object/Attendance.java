@@ -2,6 +2,8 @@ package ml.dent.object;
 
 import java.util.ArrayList;
 
+import ml.dent.json.JsonObject;
+
 public class Attendance {
 	private ArrayList<AttendanceBlock> days;
 
@@ -11,6 +13,14 @@ public class Attendance {
 
 	public void addBlock(AttendanceBlock aB) {
 		days.add(aB);
+	}
+
+	public JsonObject getJsonData() {
+		JsonObject res = new JsonObject();
+		for (AttendanceBlock aB : days) {
+			res.add(aB.day, aB.marker);
+		}
+		return res;
 	}
 
 	public static class AttendanceBlock {

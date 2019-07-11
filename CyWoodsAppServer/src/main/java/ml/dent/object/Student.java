@@ -60,8 +60,8 @@ public class Student {
 			Class c = classes.get(s);
 			classArray.add(c.getJsonData());
 		}
-		res.add("classes", classArray);
-		res.add("transcript", transcript.getJsonData());
+		res.add("classes", classArray).add("transcript", transcript.getJsonData()).add("attendance",
+				attendance.getJsonData());
 		return res;
 	}
 
