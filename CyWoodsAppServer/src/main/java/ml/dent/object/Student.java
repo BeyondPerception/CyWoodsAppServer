@@ -109,4 +109,7 @@ public class Student {
 		return transcript;
 	}
 
+	public Attendance getAttendance() {
+		return attendance;
+	}
 }
