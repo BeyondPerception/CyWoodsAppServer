@@ -341,30 +341,35 @@ public class StudentFetcher {
 	 */
 	private void fetchAttendance() throws IOException {
 		Document monthlyView = getDocument(HAC_ATTENDANCE_URL);
+		System.out.println(monthlyView);
 		Elements calendarRows = monthlyView.select("#plnMain_cldAttendance > tbody:nth-child(1)").select("tr");
 
-		String month = calendarRows.get(0).text();
-		System.out.println(month);
+		String month = monthlyView
+				.selectFirst("table.sg-asp-calendar-header > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2)")
+				.text();
+		month = month.substring(0, month.indexOf(" "));
 
 		for (int i = 2/* The first two rows are the month/year and the days */; i < calendarRows.size(); i++) {
 			Elements days = calendarRows.get(i).select("td");
 
 			for (Element day : days) {
-				String dayNum = month.substring(0, month.indexOf(" ")) + " " + day.text();
-				String markers;
-				try {
-					markers = day.attr("title");
-				} catch (NullPointerException e1) {
-					// Not all days have markers
-					markers = null;
+				String dayNum = month + " " + day.text();
+				String markers = day.attr("title");
+
+				boolean isSchoolClosed = day.attr("style").contains("background-color:#CCCCCC");
+
+				if (!markers.isEmpty()) {
+					currentUser.getAttendance().addBlock(new AttendanceBlock(dayNum, markers));
+				} else if (isSchoolClosed) {
+					currentUser.getAttendance().addBlock(new AttendanceBlock(dayNum, "School Closed"));
 				}
-				currentUser.getAttendance().addBlock(new AttendanceBlock(dayNum, markers));
 			}
 		}
 	}
 
 	private Document getDocument(String url) throws IOException {
-		return Jsoup.connect(url).cookie(".AuthCookie", authCookie).cookie("ASP.NET_SessionId", sessionID).get();
+		return Jsoup.connect(url).cookie(".AuthCookie", authCookie).cookie("ASP.NET_SessionId", sessionID)
+				.userAgent("Mozilla/5.0 (X11; Linux x86_64; rv:67.0) Gecko/20100101 Firefox/67.0").get();
 	}
 
 	/**
