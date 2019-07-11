@@ -1,5 +1,5 @@
 #This is the master file that stores all the schedules for the current month
-#Don't make comments, this is cheating
+#Don't make comments (this is cheating)
 #Don't edit this file directly, you'll probably mess it up, use the CLI tool
 
 INDEX
@@ -31,29 +31,54 @@ second
 
 07/09
 custom
-1 7:20 8:12
-2 8:16 9:20
-3 9:26 10:18
+Test Name
+"1st period" 7:20 8:10
+"2nd period" 8:18 9:20
+"3rd period" 9:26 10:18
 LUNCH
 A
-4 10:24 11:16
-5 11:22 12:14
+"A Lunch" 10:18 10:48
+"4th period" 10:54 11:16
+"5th period" 11:22 12:14
 B
-4 10:24 11:16
-5 11:22 12:14
+"4th period" 10:24 11:16
+"B Lunch" 11:16 11:46
+"5th period" 11:46 12:14
 C
-4 10:24 11:16
-5 11:22 12:14
+"4th period" 10:24 11:16
+"5th period" 11:22 12:14
+"C Lunch" 12:14 12:44
 END
-6 12:20 1:40
-7 1:46 2:40
+"6th period" 12:44 13:40
+"7th period" 13:46 14:40
 END
 
 07/10
-second
+custom
+Final Half Day Example
+"1st Peroid Final" 7:20 10:40
+"2nd Period Final" 10:46 14:40
+LUNCH
+END
+END
 
 07/11
-seventh
+custom
+LUNCH
+A
+"A Lunch" 7:20 8:12
+"1st Period" 8:18 10:40
+"2nd Period" 10:46 14:40
+B
+"1st Period" 7:20 8:12
+"B Lunch" 8:18 10:40
+"2nd Period" 10:46 14:40
+C
+"1st Period" 7:20 8:12
+"2nd Period" 8:18 10:40
+"C Lunch" 10:46 14:40
+END
+END
 
 07/12
 standard
