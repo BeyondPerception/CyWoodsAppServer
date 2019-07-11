@@ -11,6 +11,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import ml.dent.object.Assignment;
+import ml.dent.object.Attendance.AttendanceBlock;
 import ml.dent.object.Class;
 import ml.dent.object.Student;
 import ml.dent.object.Teacher;
@@ -102,6 +103,14 @@ public class StudentFetcher {
 			System.err.println("Failed to fetch transcript");
 			e.printStackTrace();
 			return Default.BadGateway("Failed to fetch transcript");
+		}
+
+		try {
+			fetchAttendance();
+		} catch (Exception e) {
+			System.out.println("Failed to fetch attendance");
+			e.printStackTrace();
+			return Default.BadGateway("Failed to fetch attendance");
 		}
 
 		return Default.OK("");
@@ -324,6 +333,33 @@ public class StudentFetcher {
 			currentUser.getTranscript().setGpa(Double.parseDouble(gpa));
 		} catch (NumberFormatException e) {
 			currentUser.getTranscript().setGpa(Double.NaN);
+		}
+	}
+
+	/**
+	 * Fetches monthly attendance from HAC
+	 */
+	private void fetchAttendance() throws IOException {
+		Document monthlyView = getDocument(HAC_ATTENDANCE_URL);
+		Elements calendarRows = monthlyView.select("#plnMain_cldAttendance > tbody:nth-child(1)").select("tr");
+
+		String month = calendarRows.get(0).text();
+		System.out.println(month);
+
+		for (int i = 2/* The first two rows are the month/year and the days */; i < calendarRows.size(); i++) {
+			Elements days = calendarRows.get(i).select("td");
+
+			for (Element day : days) {
+				String dayNum = month.substring(0, month.indexOf(" ")) + " " + day.text();
+				String markers;
+				try {
+					markers = day.attr("title");
+				} catch (NullPointerException e1) {
+					// Not all days have markers
+					markers = null;
+				}
+				currentUser.getAttendance().addBlock(new AttendanceBlock(dayNum, markers));
+			}
 		}
 	}
 
