@@ -25,12 +25,14 @@ public class Student {
 	// object makes it easier on us in the future.
 	private LinkedHashMap<String, Class> classes;
 	private Transcript transcript;
+	private Attendance attendance;
 
 	public Student(String username, String password) {
 		this.username = username;
 		this.password = password;
 		classes = new LinkedHashMap<>();
 		transcript = new Transcript();
+		attendance = new Attendance();
 	}
 
 	public Student(String name, String username, String password) {
@@ -39,6 +41,7 @@ public class Student {
 		this.setPassword(password);
 		classes = new LinkedHashMap<>();
 		transcript = new Transcript();
+		attendance = new Attendance();
 	}
 
 	public Student(String name, String username, String password, LinkedHashMap<String, Class> classes) {
@@ -47,6 +50,7 @@ public class Student {
 		this.setPassword(password);
 		this.classes = classes;
 		transcript = new Transcript();
+		attendance = new Attendance();
 	}
 
 	public JsonObject getJsonData() {
