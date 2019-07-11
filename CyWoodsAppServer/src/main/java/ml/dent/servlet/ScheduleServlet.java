@@ -165,6 +165,8 @@ public class ScheduleServlet extends HttpServlet {
 
 		} catch (Exception e) {
 			pw.println(Default.InternalServerError("Failed to parse schedule file!"));
+			System.out.println("Failed to parse schedule file!");
+			e.printStackTrace();
 		}
 	}
 
