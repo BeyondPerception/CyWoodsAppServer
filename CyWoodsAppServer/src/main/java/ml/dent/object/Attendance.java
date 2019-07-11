@@ -15,19 +15,15 @@ public class Attendance {
 
 	public static class AttendanceBlock {
 		private String day;
-		private ArrayList<String> markers;
+		private String marker;
 
 		public AttendanceBlock() {
 			setDay(null);
-			markers = new ArrayList<>();
 		}
 
-		public AttendanceBlock(ArrayList<String> s) {
-			markers = s;
-		}
-
-		public void addMarker(String s) {
-			markers.add(s);
+		public AttendanceBlock(String day, String marker) {
+			this.day = day;
+			this.marker = marker;
 		}
 
 		public String getDay() {
@@ -36,6 +32,14 @@ public class Attendance {
 
 		public void setDay(String day) {
 			this.day = day;
+		}
+
+		public String getMarker() {
+			return marker;
+		}
+
+		public void setMarker(String marker) {
+			this.marker = marker;
 		}
 	}
 }
