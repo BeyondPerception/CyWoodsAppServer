@@ -72,6 +72,9 @@ public class StudentFetcher {
 		return currentUser;
 	}
 
+	/**
+	* This method calls each populating method 
+	*/
 	public String populateStudent() {
 		String loginRet = login();
 
