@@ -10,8 +10,18 @@
 		<description></description>
 		<servlet-class>ml.dent.servlet.ScheduleServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>NewsServlet</servlet-name>
+		<display-name>NewsServlet</display-name>
+		<description></description>
+		<servlet-class>ml.dent.servlet.NewsServlet</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>ScheduleServlet</servlet-name>
 		<url-pattern>/ScheduleServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>NewsServlet</servlet-name>
+		<url-pattern>/NewsServlet</url-pattern>
 	</servlet-mapping>
 </web-app>
