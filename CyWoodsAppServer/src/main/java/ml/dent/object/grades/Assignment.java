@@ -1,4 +1,4 @@
-package ml.dent.object;
+package ml.dent.object.grades;
 
 import ml.dent.json.JsonObject;
 
