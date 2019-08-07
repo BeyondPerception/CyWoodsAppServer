@@ -1,4 +1,4 @@
-package ml.dent.object.grades;
+package ml.dent.object.student;
 
 import java.util.LinkedHashMap;
 import java.util.Set;

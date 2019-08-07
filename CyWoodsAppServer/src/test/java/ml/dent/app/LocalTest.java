@@ -1,5 +1,6 @@
 package ml.dent.app;
 
+import ml.dent.json.JsonObject;
 import ml.dent.web.StudentFetcher;
 
 public class LocalTest {
@@ -32,6 +33,9 @@ public class LocalTest {
 		System.out.println(ret);
 		System.out.println(grades.returnStudent().getJsonData().format());
 		System.out.println(System.currentTimeMillis() - start);
+
+		System.out.println(new JsonObject().add("08/10", "School Closed").add("08/11", "1 No Contact\n2 No Contact")
+				.add("08/12", "1 No Contact").format());
 
 //		String regex = "[^\\s\"']+|\"([^\"]*)\"";
 //

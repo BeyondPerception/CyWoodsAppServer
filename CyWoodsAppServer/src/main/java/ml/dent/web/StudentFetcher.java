@@ -10,13 +10,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import ml.dent.object.grades.Assignment;
-import ml.dent.object.grades.Class;
-import ml.dent.object.grades.Student;
-import ml.dent.object.grades.Teacher;
-import ml.dent.object.grades.Attendance.AttendanceBlock;
-import ml.dent.object.grades.Transcript.Block;
-import ml.dent.object.grades.Transcript.Block.Course;
+import ml.dent.object.student.Assignment;
+import ml.dent.object.student.Class;
+import ml.dent.object.student.Student;
+import ml.dent.object.student.Teacher;
+import ml.dent.object.student.Attendance.AttendanceBlock;
+import ml.dent.object.student.Transcript.Block;
+import ml.dent.object.student.Transcript.Block.Course;
 import ml.dent.util.Default;
 
 /**
