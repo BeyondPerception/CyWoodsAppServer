@@ -3,74 +3,81 @@ package ml.dent.object.news;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import ml.dent.json.JsonObject;
+
 public class NewsItem implements Comparable<NewsItem> {
-	private String Source;
+	private String type;
 
-	private String Title;
-	private String Date;
+	private String title;
+	private String date;
 
-	private Integer Priority;
+	private Integer priority;
 
-	private String URL;
+	private String url;
 
 	public NewsItem(String source, String title, Date date) {
-		this.Source = source;
-		this.Title = title;
-		this.Date = new SimpleDateFormat("MMM d, y").format(date);
+		this.type = source;
+		this.title = title;
+		this.date = new SimpleDateFormat("MMM d, y").format(date);
 	}
 
 	public NewsItem(String source, String title, Date date, String url) {
 		this(source, title, date);
-		this.URL = url;
+		this.url = url;
+	}
+
+	public JsonObject getJsonData() {
+		return new JsonObject().add("type", type).add("title", title).add("date", date).add("priority", priority)
+				.add("url", url);
 	}
 
 	public String getURL() {
-		return URL;
+		return url;
 	}
 
-	public void setURL(String uRL) {
-		URL = uRL;
+	public void setURL(String u) {
+		url = u;
 	}
 
 	public String getDate() {
-		return Date;
+		return date;
 	}
 
-	public void setDate(String date) {
-		Date = date;
+	public void setDate(String d) {
+		date = d;
 	}
 
 	public String getTitle() {
-		return Title;
+		return title;
 	}
 
-	public void setTitle(String title) {
-		Title = title;
+	public void setTitle(String t) {
+		title = t;
 	}
 
 	public Integer getPriority() {
-		return Priority;
+		return priority;
 	}
 
-	public void setPriority(Integer priority) {
-		Priority = priority;
+	public void setPriority(Integer p) {
+		priority = p;
 	}
 
-	public String getSource() {
-		return Source;
+	public String getType() {
+		return type;
 	}
 
-	public void setSource(String source) {
-		Source = source;
+	public void setType(String source) {
+		type = source;
 	}
 
 	@Override
 	public int compareTo(NewsItem other) {
 		SimpleDateFormat format = new SimpleDateFormat("MMM d, y");
 		try {
-			int compare = format.parse(other.Date).compareTo(format.parse(Date));
+			int compare = format.parse(other.date).compareTo(format.parse(date));
 			if (compare == 0)
-				compare = Title.compareTo(other.Title);
+				compare = title.compareTo(other.title);
 			return compare;
 		} catch (Exception e) {
 			return -1;
