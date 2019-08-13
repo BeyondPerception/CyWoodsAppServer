@@ -1,10 +1,15 @@
 package ml.dent.app;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
+import ml.dent.json.JsonArray;
 import ml.dent.json.JsonObject;
-import ml.dent.web.StudentFetcher;
+import ml.dent.object.student.Teacher;
+import ml.dent.web.FacultyFetcher;
 
 public class LocalTest {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 //		JsonObject test = new JsonObject();
 //		test.add("firstName", "John")
 //	     .add("lastName", "Smith")
@@ -24,18 +29,32 @@ public class LocalTest {
 //		
 //		System.out.println(test.format());
 
-		String username = "s692278";
-		String password = "Smart10334";
+//		String username = "s692278";
+//		String password = "Smart10334";
+//
+//		StudentFetcher grades = new StudentFetcher(username, password);
+//		long start = System.currentTimeMillis();
+//		String ret = grades.populateStudent();
+//		System.out.println(ret);
+//		System.out.println(grades.returnStudent().getJsonData().format());
+//		System.out.println(System.currentTimeMillis() - start);
+//
+//		System.out.println(new JsonObject().add("08/10", "School Closed").add("08/11", "1 No Contact\n2 No Contact")
+//				.add("08/12", "1 No Contact").format());
 
-		StudentFetcher grades = new StudentFetcher(username, password);
-		long start = System.currentTimeMillis();
-		String ret = grades.populateStudent();
-		System.out.println(ret);
-		System.out.println(grades.returnStudent().getJsonData().format());
-		System.out.println(System.currentTimeMillis() - start);
+		FacultyFetcher ff = new FacultyFetcher();
+		ff.fetchFaculty();
 
-		System.out.println(new JsonObject().add("08/10", "School Closed").add("08/11", "1 No Contact\n2 No Contact")
-				.add("08/12", "1 No Contact").format());
+		ArrayList<Teacher> fac = ff.getFaculty();
+
+		JsonObject jo = new JsonObject();
+		JsonArray teachers = new JsonArray();
+
+		for (Teacher val : fac) {
+			teachers.add(val.getJsonData());
+		}
+
+		System.out.println(jo.add("faculty", teachers).format());
 
 //		String regex = "[^\\s\"']+|\"([^\"]*)\"";
 //
