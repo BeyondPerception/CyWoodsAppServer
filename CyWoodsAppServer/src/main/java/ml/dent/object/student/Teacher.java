@@ -5,19 +5,26 @@ import ml.dent.json.JsonObject;
 public class Teacher {
 	private String name;
 	private String email;
+	private String website;
 
-	public Teacher(String n, String e) {
+	public Teacher(String n, String e, String w) {
 		setName(n);
 		setEmail(e);
+		setWebsite(w);
 	}
 
 	public Teacher() {
 		name = "";
 		email = "";
+		website = null;
 	}
 
 	public JsonObject getJsonData() {
-		return new JsonObject().add("name", name).add("email", email);
+		JsonObject res = new JsonObject().add("name", name).add("email", email);
+		if (website != null) {
+			res.add("website", website);
+		}
+		return res;
 	}
 
 	public String getName() {
@@ -34,6 +41,14 @@ public class Teacher {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(String website) {
+		this.website = website;
 	}
 
 }
