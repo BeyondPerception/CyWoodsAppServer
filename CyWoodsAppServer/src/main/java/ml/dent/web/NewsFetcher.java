@@ -15,8 +15,4 @@ public class NewsFetcher {
 		news = new ArrayList<>();
 	}
 
-	public  fetchNews() {
-		
-	}
-
 }
