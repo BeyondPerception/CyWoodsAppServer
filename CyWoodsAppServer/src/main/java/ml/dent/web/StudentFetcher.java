@@ -28,7 +28,7 @@ import ml.dent.util.Default;
  * 
  * @author Ronak Maik
  */
-public class StudentFetcher {
+public class StudentFetcher extends AbstractFetcher {
 
 	// Home Access Center URLS that we will be parsing.
 	private static final String HAC_LOGIN_URL = "https://home-access.cfisd.net/HomeAccess/Account/LogOn";
@@ -73,8 +73,8 @@ public class StudentFetcher {
 	}
 
 	/**
-	* This method calls each populating method 
-	*/
+	 * This method calls each populating method
+	 */
 	public String populateStudent() {
 		String loginRet = login();
 
@@ -370,7 +370,8 @@ public class StudentFetcher {
 		}
 	}
 
-	private Document getDocument(String url) throws IOException {
+	@Override
+	protected Document getDocument(String url) throws IOException {
 		return Jsoup.connect(url).cookie(".AuthCookie", authCookie).cookie("ASP.NET_SessionId", sessionID)
 				.userAgent("Mozilla/5.0 (X11; Linux x86_64; rv:67.0) Gecko/20100101 Firefox/67.0").get();
 	}
