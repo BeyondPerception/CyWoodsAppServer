@@ -2,6 +2,7 @@ package ml.dent.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,7 +10,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ml.dent.json.JsonArray;
+import ml.dent.json.JsonObject;
+import ml.dent.object.news.NewsItem;
 import ml.dent.util.Default;
+import ml.dent.web.NewsFetcher;
 
 /**
  * Servlet implementation class NewsServlet
@@ -32,8 +37,25 @@ public class NewsServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
-		
+		PrintWriter pw = response.getWriter();
+
+		NewsFetcher newsFetcher = new NewsFetcher();
+		try {
+			newsFetcher.populateNews();
+		} catch (Exception e) {
+			pw.println(Default.InternalServerError("failed to fetch news"));
+			e.printStackTrace();
+		}
+
+		ArrayList<NewsItem> news = newsFetcher.getNews();
+
+		JsonArray newsArray = new JsonArray();
+
+		for (NewsItem val : news) {
+			newsArray.add(val.getJsonData());
+		}
+
+		pw.println(new JsonObject().add("news", newsArray));
 	}
 
 	/**
