@@ -15,14 +15,15 @@ public class NewsItem implements Comparable<NewsItem> {
 
 	private String url;
 
-	public NewsItem(String source, String title, Date date) {
+	public NewsItem(String source, String title, Date date, int priority) {
 		this.type = source;
 		this.title = title;
 		this.date = new SimpleDateFormat("MMM d, y").format(date);
+		this.priority = priority;
 	}
 
-	public NewsItem(String source, String title, Date date, String url) {
-		this(source, title, date);
+	public NewsItem(String source, String title, Date date, String url, int priority) {
+		this(source, title, date, priority);
 		this.url = url;
 	}
 

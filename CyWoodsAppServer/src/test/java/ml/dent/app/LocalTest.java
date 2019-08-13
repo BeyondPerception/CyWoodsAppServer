@@ -43,22 +43,22 @@ public class LocalTest {
 //		System.out.println(new JsonObject().add("08/10", "School Closed").add("08/11", "1 No Contact\n2 No Contact")
 //				.add("08/12", "1 No Contact").format());
 
-		FacultyFetcher ff = new FacultyFetcher();
-		ff.fetchFaculty();
+//		FacultyFetcher ff = new FacultyFetcher();
+//		ff.fetchFaculty();
+//
+//		ArrayList<Teacher> fac = ff.getFaculty();
+//
+//		JsonObject jo = new JsonObject();
+//		JsonArray teachers = new JsonArray();
+//
+//		for (Teacher val : fac) {
+//			teachers.add(val.getJsonData());
+//		}
+//
+//		System.out.println(jo.add("faculty", teachers).format());
 
-		ArrayList<Teacher> fac = ff.getFaculty();
-
-		JsonObject jo = new JsonObject();
-		JsonArray teachers = new JsonArray();
-
-		for (Teacher val : fac) {
-			teachers.add(val.getJsonData());
-		}
-
-		System.out.println(jo.add("faculty", teachers).format());
-
-//		NewsFetcher nf = new NewsFetcher();
-//		nf.populateNews();
+		NewsFetcher nf = new NewsFetcher();
+		nf.populateNews();
 
 //		String regex = "[^\\s\"']+|\"([^\"]*)\"";
 //
