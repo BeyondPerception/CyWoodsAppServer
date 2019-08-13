@@ -24,6 +24,46 @@ public class NewsItem implements Comparable<NewsItem> {
 		this.URL = url;
 	}
 
+	public String getURL() {
+		return URL;
+	}
+
+	public void setURL(String uRL) {
+		URL = uRL;
+	}
+
+	public String getDate() {
+		return Date;
+	}
+
+	public void setDate(String date) {
+		Date = date;
+	}
+
+	public String getTitle() {
+		return Title;
+	}
+
+	public void setTitle(String title) {
+		Title = title;
+	}
+
+	public Integer getPriority() {
+		return Priority;
+	}
+
+	public void setPriority(Integer priority) {
+		Priority = priority;
+	}
+
+	public String getSource() {
+		return Source;
+	}
+
+	public void setSource(String source) {
+		Source = source;
+	}
+
 	@Override
 	public int compareTo(NewsItem other) {
 		SimpleDateFormat format = new SimpleDateFormat("MMM d, y");
