@@ -201,7 +201,7 @@ public class StudentFetcher extends AbstractFetcher {
 
 			// Adding course and staff info to user
 			currentUser.addClass(courseName);
-			currentUser.getClass(courseName).setTeacher(new Teacher(teacherName, teacherEmail));
+			currentUser.getClass(courseName).setTeacher(new Teacher(teacherName, teacherEmail, null));
 			currentUser.getClass(courseName).setHAC_id(Integer.parseInt(courseId));
 			currentUser.getClass(courseName).setQuarter(Integer.parseInt(quarter));
 
