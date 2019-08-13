@@ -44,6 +44,7 @@ public class FacultyServlet extends HttpServlet {
 			facultyFetcher.fetchFaculty();
 		} catch (IOException e) {
 			pw.println(Default.InternalServerError("Failed to fetch faculty"));
+			e.printStackTrace();
 		}
 
 		ArrayList<Teacher> fac = facultyFetcher.getFaculty();
