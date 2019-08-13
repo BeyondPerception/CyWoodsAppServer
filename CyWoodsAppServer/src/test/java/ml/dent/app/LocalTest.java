@@ -1,12 +1,10 @@
 package ml.dent.app;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import ml.dent.json.JsonArray;
 import ml.dent.json.JsonObject;
-import ml.dent.object.student.Teacher;
-import ml.dent.web.FacultyFetcher;
+import ml.dent.object.news.NewsItem;
 import ml.dent.web.NewsFetcher;
 
 public class LocalTest {
@@ -57,8 +55,21 @@ public class LocalTest {
 //
 //		System.out.println(jo.add("faculty", teachers).format());
 
+//		Date d = new SimpleDateFormat("MM/dd/yy").parse("08/13/19");
+//		System.out.println(new SimpleDateFormat("MM/dd/yyyy").format(d));
+
 		NewsFetcher nf = new NewsFetcher();
 		nf.populateNews();
+
+		ArrayList<NewsItem> news = nf.getNews();
+
+		JsonArray newsArray = new JsonArray();
+
+		for (NewsItem val : news) {
+			newsArray.add(val.getJsonData());
+		}
+
+		System.out.println(new JsonObject().add("news", newsArray).format());
 
 //		String regex = "[^\\s\"']+|\"([^\"]*)\"";
 //
