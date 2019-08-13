@@ -56,8 +56,7 @@ public class FacultyFetcher extends AbstractFetcher {
 					// We know for sure that all faculty members will have an email, becuase cfisd
 					// gives them one, but if they don't have a website, then the email will be the
 					// first thing on the list.
-
-					String facultyName = info.text(); // The only actual text is the faculty's name;
+					String facultyName = name.text(); // The only actual text is the faculty's name;
 					String email = info.get(0).toString();
 					email = email.substring(email.indexOf("mailto:") + 7);
 					email = email.substring(0, email.indexOf("\""));

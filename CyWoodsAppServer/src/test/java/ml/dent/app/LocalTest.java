@@ -7,9 +7,10 @@ import ml.dent.json.JsonArray;
 import ml.dent.json.JsonObject;
 import ml.dent.object.student.Teacher;
 import ml.dent.web.FacultyFetcher;
+import ml.dent.web.NewsFetcher;
 
 public class LocalTest {
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 //		JsonObject test = new JsonObject();
 //		test.add("firstName", "John")
 //	     .add("lastName", "Smith")
@@ -55,6 +56,9 @@ public class LocalTest {
 		}
 
 		System.out.println(jo.add("faculty", teachers).format());
+
+//		NewsFetcher nf = new NewsFetcher();
+//		nf.populateNews();
 
 //		String regex = "[^\\s\"']+|\"([^\"]*)\"";
 //
