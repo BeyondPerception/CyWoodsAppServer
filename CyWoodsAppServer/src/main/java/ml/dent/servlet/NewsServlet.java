@@ -45,6 +45,7 @@ public class NewsServlet extends HttpServlet {
 		} catch (Exception e) {
 			pw.println(Default.InternalServerError("failed to fetch news"));
 			e.printStackTrace();
+			return;
 		}
 
 		ArrayList<NewsItem> news = newsFetcher.getNews();
@@ -55,7 +56,7 @@ public class NewsServlet extends HttpServlet {
 			newsArray.add(val.getJsonData());
 		}
 
-		pw.println(new JsonObject().add("news", newsArray));
+		pw.println(new JsonObject().add("news", newsArray).format());
 	}
 
 	/**
