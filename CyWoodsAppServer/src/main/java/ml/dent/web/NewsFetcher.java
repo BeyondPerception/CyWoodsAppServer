@@ -28,7 +28,7 @@ public class NewsFetcher extends AbstractFetcher {
 
 	public NewsFetcher() {
 		news = new ArrayList<>();
-		fetched = false;
+		fetched = true;
 	}
 
 	public ArrayList<NewsItem> getNews() throws IllegalStateException {
