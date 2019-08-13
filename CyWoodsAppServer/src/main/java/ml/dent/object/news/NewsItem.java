@@ -9,7 +9,7 @@ public class NewsItem implements Comparable<NewsItem> {
 	private String type;
 
 	private String title;
-	private String date;
+	private Date date;
 
 	private Integer priority;
 
@@ -18,7 +18,7 @@ public class NewsItem implements Comparable<NewsItem> {
 	public NewsItem(String source, String title, Date date, int priority) {
 		this.type = source;
 		this.title = title;
-		this.date = new SimpleDateFormat("MMM d, y").format(date);
+		this.date = date;
 		this.priority = priority;
 	}
 
@@ -28,8 +28,8 @@ public class NewsItem implements Comparable<NewsItem> {
 	}
 
 	public JsonObject getJsonData() {
-		return new JsonObject().add("type", type).add("title", title).add("date", date).add("priority", priority)
-				.add("url", url);
+		return new JsonObject().add("type", type).add("title", title)
+				.add("date", new SimpleDateFormat("MM/dd/yy").format(date)).add("url", url);
 	}
 
 	public String getURL() {
@@ -40,11 +40,11 @@ public class NewsItem implements Comparable<NewsItem> {
 		url = u;
 	}
 
-	public String getDate() {
+	public Date getDate() {
 		return date;
 	}
 
-	public void setDate(String d) {
+	public void setDate(Date d) {
 		date = d;
 	}
 
@@ -74,15 +74,17 @@ public class NewsItem implements Comparable<NewsItem> {
 
 	@Override
 	public int compareTo(NewsItem other) {
-		SimpleDateFormat format = new SimpleDateFormat("MMM d, y");
-		try {
-			int compare = format.parse(other.date).compareTo(format.parse(date));
-			if (compare == 0)
-				compare = title.compareTo(other.title);
-			return compare;
-		} catch (Exception e) {
+		if (other.priority > priority)
+			return 1;
+		if (other.priority < priority)
 			return -1;
+
+		int dateCompare = date.compareTo(other.date);
+		if (dateCompare != 0) {
+			return -dateCompare;
 		}
+
+		return title.compareTo(other.title);
 	}
 
 	@Override
