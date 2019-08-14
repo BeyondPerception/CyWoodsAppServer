@@ -1,5 +1,6 @@
 package ml.dent.app;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import ml.dent.json.JsonArray;
@@ -58,18 +59,18 @@ public class LocalTest {
 //		Date d = new SimpleDateFormat("MM/dd/yy").parse("08/13/19");
 //		System.out.println(new SimpleDateFormat("MM/dd/yyyy").format(d));
 
-		NewsFetcher nf = new NewsFetcher();
-		nf.populateNews();
-
-		ArrayList<NewsItem> news = nf.getNews();
-
-		JsonArray newsArray = new JsonArray();
-
-		for (NewsItem val : news) {
-			newsArray.add(val.getJsonData());
-		}
-
-		System.out.println(new JsonObject().add("news", newsArray).format());
+//		NewsFetcher nf = new NewsFetcher();
+//		nf.populateNews();
+//
+//		ArrayList<NewsItem> news = nf.getNews();
+//
+//		JsonArray newsArray = new JsonArray();
+//
+//		for (NewsItem val : news) {
+//			newsArray.add(val.getJsonData());
+//		}
+//
+//		System.out.println(new JsonObject().add("news", newsArray).format());
 
 //		String regex = "[^\\s\"']+|\"([^\"]*)\"";
 //
