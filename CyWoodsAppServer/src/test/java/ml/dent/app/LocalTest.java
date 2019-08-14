@@ -1,13 +1,5 @@
 package ml.dent.app;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-
-import ml.dent.json.JsonArray;
-import ml.dent.json.JsonObject;
-import ml.dent.object.news.NewsItem;
-import ml.dent.web.NewsFetcher;
-
 public class LocalTest {
 	public static void main(String[] args) throws Exception {
 //		JsonObject test = new JsonObject();
@@ -29,9 +21,6 @@ public class LocalTest {
 //		
 //		System.out.println(test.format());
 
-//		String username = "s692278";
-//		String password = "Smart10334";
-//
 //		StudentFetcher grades = new StudentFetcher(username, password);
 //		long start = System.currentTimeMillis();
 //		String ret = grades.populateStudent();
