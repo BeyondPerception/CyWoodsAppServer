@@ -1,8 +1,11 @@
 package ml.dent.servlet;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -50,13 +53,30 @@ public class NewsServlet extends HttpServlet {
 
 		ArrayList<NewsItem> news = newsFetcher.getNews();
 
+		JsonObject res = new JsonObject();
 		JsonArray newsArray = new JsonArray();
 
 		for (NewsItem val : news) {
 			newsArray.add(val.getJsonData());
 		}
 
-		pw.println(new JsonObject().add("news", newsArray).format());
+		res.add("news", newsArray);
+
+		String eventFilePath = System.getProperty("user.home") + "/Events.txt";
+		Scanner file = new Scanner(new File(eventFilePath));
+
+		JsonArray events = new JsonArray();
+		while (file.hasNext()) {
+			try {
+				events.add(new JsonObject().add("title", file.nextLine()).add("dates", file.nextLine()));
+				file.nextLine();
+			} catch (NoSuchElementException e) {
+				// shhh...
+			}
+		}
+		res.add("events", events);
+
+		pw.println(res.format());
 	}
 
 	/**
