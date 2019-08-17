@@ -5,10 +5,10 @@ import ml.dent.json.JsonObject;
 public class AthleticItem {
 	private String type;
 	private String opponent;
-	private int ourScore;
-	private int oppScore;
+	private String ourScore;
+	private String oppScore;
 
-	public AthleticItem(String t, String o, int ourS, int oppS) {
+	public AthleticItem(String t, String o, String ourS, String oppS) {
 		type = t;
 		opponent = o;
 		ourScore = ourS;
