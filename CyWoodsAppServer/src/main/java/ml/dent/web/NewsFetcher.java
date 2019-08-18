@@ -61,7 +61,7 @@ public class NewsFetcher extends AbstractFetcher {
 			// All the relevant info except the date is stored in this tag
 			Element info = newsItem.getElementsByClass("item-title").first().selectFirst("a");
 			String title = info.text();
-			String url = "cfisd.net" + info.attr("href");
+			String url = "https://www.cfisd.net" + info.attr("href");
 
 			String date = newsItem.getElementsByClass("item-date").first().text();
 
@@ -84,7 +84,7 @@ public class NewsFetcher extends AbstractFetcher {
 			// All the relevant info except the date is stored in this tag
 			Element info = newsItem.getElementsByClass("item-title").first().selectFirst("a");
 			String title = info.text();
-			String url = "cfisd.net" + info.attr("href");
+			String url = "https://www.cfisd.net" + info.attr("href");
 
 			String date = newsItem.getElementsByClass("item-date").first().text();
 
