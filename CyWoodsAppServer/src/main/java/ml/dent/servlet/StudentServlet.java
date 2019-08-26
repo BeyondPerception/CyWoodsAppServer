@@ -1,9 +1,7 @@
 package ml.dent.servlet;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Scanner;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ml.dent.util.Default;
+import ml.dent.web.StudentFetcher;
 
 /**
  * The frontend will send an HTTP request to this servlet at the above endpoint
@@ -65,16 +64,21 @@ public class StudentServlet extends HttpServlet {
 
 		String username = user_encoded;
 		String password = pass_encoded;
-		/*
-		 * UNCOMMENT THIS FOR REAL THING StudentFetcher grades = new
-		 * StudentFetcher(username, password); String ret = grades.populateStudent(); if
-		 * (ret.contains("false")) { pw.println(ret); } else {
-		 * pw.println(grades.returnStudent().getJsonData().format()); }
-		 */
 
-		Scanner file = new Scanner(new File(System.getProperty("user.home") + "/dummyData.json"));
-		while (file.hasNext()) {
-			pw.println(file.nextLine());
+		StudentFetcher grades = new StudentFetcher(username, password);
+		try {
+			String ret = grades.populateStudent();
+			if (ret.contains("false")) {
+				pw.println(ret);
+			} else {
+				pw.println(grades.returnStudent().getJsonData().format());
+			}
+		} catch (Exception e) {
+			pw.println(Default.InternalServerError("Failed to fetch grades"));
 		}
+		/*
+		 * Scanner file = new Scanner(new File(System.getProperty("user.home") +
+		 * "/dummyData.json")); while (file.hasNext()) { pw.println(file.nextLine()); }
+		 */
 	}
 }
