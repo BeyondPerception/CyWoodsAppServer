@@ -18,9 +18,13 @@ public class Class {
 	private String cfuName; // Daily Grades
 	private String raName; // Assessment Grades
 	private String saName; // Test Grades
-	private String CFUWeight;
-	private String RAWeight;
-	private String SAWeight;
+	private String CFUPoints;
+	private String RAPoints;
+	private String SAPoints;
+
+	private double cfuWeight;
+	private double raWeight;
+	private double saWeight;
 
 	public Class() {
 		setName("");
@@ -31,6 +35,9 @@ public class Class {
 		setCfuName("DG");
 		setRaName("AS");
 		setSaName("TE");
+		setCfuWeight(Double.NaN);
+		setRaWeight(Double.NaN);
+		setSaWeight(Double.NaN);
 	}
 
 	public Class(String n) {
@@ -54,8 +61,11 @@ public class Class {
 	}
 
 	public JsonObject getJsonData() {
-		JsonObject res = new JsonObject().add("name", name).add("grade", getGrade()).add(cfuName, CFUWeight)
-				.add(raName, RAWeight).add(saName, SAWeight).add("teacher", teacher.getJsonData());
+		JsonObject res = new JsonObject().add("name", name).add("grade", getGrade())
+				.add("categoryPoints",
+						new JsonObject().add(cfuName, CFUPoints).add(raName, RAPoints).add(saName, SAPoints))
+				.add("weights", new JsonObject().add(cfuName, cfuWeight).add(raName, raWeight).add(saName, saWeight))
+				.add("teacher", teacher.getJsonData());
 		JsonArray assignments = new JsonArray();
 		for (Assignment a : assigns) {
 			assignments.add(a.getJsonData());
@@ -116,28 +126,28 @@ public class Class {
 		this.quarter = quarter;
 	}
 
-	public String getCFUWeight() {
-		return CFUWeight;
+	public String getCFUPoints() {
+		return CFUPoints;
 	}
 
-	public void setCFUWeight(String cFUWeight) {
-		CFUWeight = cFUWeight;
+	public void setCFUPoints(String cFUWeight) {
+		CFUPoints = cFUWeight;
 	}
 
-	public String getRAWeight() {
-		return RAWeight;
+	public String getRAPoints() {
+		return RAPoints;
 	}
 
-	public void setRAWeight(String rAWeight) {
-		RAWeight = rAWeight;
+	public void setRAPoints(String rAWeight) {
+		RAPoints = rAWeight;
 	}
 
-	public String getSAWeight() {
-		return SAWeight;
+	public String getSAPoints() {
+		return SAPoints;
 	}
 
-	public void setSAWeight(String sAWeight) {
-		SAWeight = sAWeight;
+	public void setSAPoints(String sAWeight) {
+		SAPoints = sAWeight;
 	}
 
 	public String getCfuName() {
@@ -162,5 +172,29 @@ public class Class {
 
 	public void setSaName(String saName) {
 		this.saName = saName;
+	}
+
+	public double getCfuWeight() {
+		return cfuWeight;
+	}
+
+	public void setCfuWeight(double cfuWeight) {
+		this.cfuWeight = cfuWeight;
+	}
+
+	public double getRaWeight() {
+		return raWeight;
+	}
+
+	public void setRaWeight(double raWeight) {
+		this.raWeight = raWeight;
+	}
+
+	public double getSaWeight() {
+		return saWeight;
+	}
+
+	public void setSaWeight(double saWeight) {
+		this.saWeight = saWeight;
 	}
 }

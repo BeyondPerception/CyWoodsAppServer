@@ -280,13 +280,28 @@ public class StudentFetcher extends AbstractFetcher {
 				Elements saRow = categoryTable.get(3).select("td");
 
 				curClass.setCfuName(cfuRow.get(0).text());
-				curClass.setCFUWeight(cfuRow.get(1).text() + "/" + cfuRow.get(2).text());
+				curClass.setCFUPoints(cfuRow.get(1).text() + "/" + cfuRow.get(2).text());
+				try {
+					curClass.setCfuWeight(Double.parseDouble(cfuRow.get(4).text()) / 100);
+				} catch (NumberFormatException e) {
+					System.err.println("Failed to parse CFU weight");
+				}
 
 				curClass.setRaName(raRow.get(0).text());
-				curClass.setRAWeight(raRow.get(1).text() + "/" + raRow.get(2).text());
+				curClass.setRAPoints(raRow.get(1).text() + "/" + raRow.get(2).text());
+				try {
+					curClass.setCfuWeight(Double.parseDouble(raRow.get(4).text()) / 100);
+				} catch (NumberFormatException e) {
+					System.err.println("Failed to parse RA weight");
+				}
 
 				curClass.setSaName(saRow.get(0).text());
-				curClass.setSAWeight(saRow.get(1).text() + "/" + saRow.get(2).text());
+				curClass.setSAPoints(saRow.get(1).text() + "/" + saRow.get(2).text());
+				try {
+					curClass.setCfuWeight(Double.parseDouble(saRow.get(4).text()) / 100);
+				} catch (NumberFormatException e) {
+					System.err.println("Failed to parse SA weight");
+				}
 			}
 		}
 	}
