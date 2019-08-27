@@ -10,13 +10,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.sun.javafx.binding.SelectBinding.AsInteger;
-
 import ml.dent.object.student.Assignment;
+import ml.dent.object.student.Attendance.AttendanceBlock;
 import ml.dent.object.student.Class;
 import ml.dent.object.student.Student;
 import ml.dent.object.student.Teacher;
-import ml.dent.object.student.Attendance.AttendanceBlock;
 import ml.dent.object.student.Transcript.Block;
 import ml.dent.object.student.Transcript.Block.Course;
 import ml.dent.util.Default;
@@ -28,7 +26,7 @@ import ml.dent.util.Default;
  * called Jsoup. I would highly recommend looking up the docs, but it is pretty
  * straight forward, and I'll try to leave helpful comments along the way.
  * 
- * @author Ronak Maik
+ * @author Ronak Malik
  */
 public class StudentFetcher extends AbstractFetcher {
 
@@ -272,22 +270,24 @@ public class StudentFetcher extends AbstractFetcher {
 
 			// Getting the weights for each category
 			Elements categoryTable = assignmentList
-					.selectFirst("#plnMain_rptAssigmnetsByCourse_dgCourseCategories_0 > tbody:nth-child(1)")
-					.select("tr");
+					.select("#plnMain_rptAssigmnetsByCourse_dgCourseCategories_0 > tbody:nth-child(1)");
+			// Make sure that there are weights
+			if (!categoryTable.isEmpty()) {
+				categoryTable = categoryTable.first().select("tr");
+				// First row is titles, last row is totales
+				Elements cfuRow = categoryTable.get(1).select("td");
+				Elements raRow = categoryTable.get(2).select("td");
+				Elements saRow = categoryTable.get(3).select("td");
 
-			// First row is titles, last row is totales
-			Elements cfuRow = categoryTable.get(1).select("td");
-			Elements raRow = categoryTable.get(2).select("td");
-			Elements saRow = categoryTable.get(3).select("td");
+				curClass.setCfuName(cfuRow.get(0).text());
+				curClass.setCFUWeight(cfuRow.get(1).text() + "/" + cfuRow.get(2));
 
-			curClass.setCfuName(cfuRow.get(0).text());
-			curClass.setCFUWeight(cfuRow.get(1).text() + "/" + cfuRow.get(2));
+				curClass.setRaName(raRow.get(0).text());
+				curClass.setRAWeight(raRow.get(1).text() + "/" + raRow.get(2));
 
-			curClass.setRaName(raRow.get(0).text());
-			curClass.setRAWeight(raRow.get(1).text() + "/" + raRow.get(2));
-
-			curClass.setSaName(saRow.get(0).text());
-			curClass.setSAWeight(saRow.get(1).text() + "/" + saRow.get(2));
+				curClass.setSaName(saRow.get(0).text());
+				curClass.setSAWeight(saRow.get(1).text() + "/" + saRow.get(2));
+			}
 		}
 	}
 
@@ -365,7 +365,6 @@ public class StudentFetcher extends AbstractFetcher {
 	 */
 	private void fetchAttendance() throws IOException {
 		Document monthlyView = getDocument(HAC_ATTENDANCE_URL);
-		System.out.println(monthlyView);
 		Elements calendarRows = monthlyView.select("#plnMain_cldAttendance > tbody:nth-child(1)").select("tr");
 
 		String month = monthlyView
