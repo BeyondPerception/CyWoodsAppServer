@@ -290,7 +290,7 @@ public class StudentFetcher extends AbstractFetcher {
 				curClass.setRaName(raRow.get(0).text());
 				curClass.setRAPoints(raRow.get(1).text() + "/" + raRow.get(2).text());
 				try {
-					curClass.setCfuWeight(Double.parseDouble(raRow.get(4).text()) / 100);
+					curClass.setRaWeight(Double.parseDouble(raRow.get(4).text()) / 100);
 				} catch (NumberFormatException e) {
 					System.err.println("Failed to parse RA weight");
 				}
@@ -298,7 +298,7 @@ public class StudentFetcher extends AbstractFetcher {
 				curClass.setSaName(saRow.get(0).text());
 				curClass.setSAPoints(saRow.get(1).text() + "/" + saRow.get(2).text());
 				try {
-					curClass.setCfuWeight(Double.parseDouble(saRow.get(4).text()) / 100);
+					curClass.setSaWeight(Double.parseDouble(saRow.get(4).text()) / 100);
 				} catch (NumberFormatException e) {
 					System.err.println("Failed to parse SA weight");
 				}
