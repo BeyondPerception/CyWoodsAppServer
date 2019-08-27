@@ -280,13 +280,13 @@ public class StudentFetcher extends AbstractFetcher {
 				Elements saRow = categoryTable.get(3).select("td");
 
 				curClass.setCfuName(cfuRow.get(0).text());
-				curClass.setCFUWeight(cfuRow.get(1).text() + "/" + cfuRow.get(2));
+				curClass.setCFUWeight(cfuRow.get(1).text() + "/" + cfuRow.get(2).text());
 
 				curClass.setRaName(raRow.get(0).text());
-				curClass.setRAWeight(raRow.get(1).text() + "/" + raRow.get(2));
+				curClass.setRAWeight(raRow.get(1).text() + "/" + raRow.get(2).text());
 
 				curClass.setSaName(saRow.get(0).text());
-				curClass.setSAWeight(saRow.get(1).text() + "/" + saRow.get(2));
+				curClass.setSAWeight(saRow.get(1).text() + "/" + saRow.get(2).text());
 			}
 		}
 	}
