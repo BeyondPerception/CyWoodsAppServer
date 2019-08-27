@@ -14,6 +14,14 @@ public class Class {
 	private int HAC_id;
 	private int quarter; // just in case quarters vary between classes.
 
+	// Weights Stuff
+	private String cfuName; // Daily Grades
+	private String raName; // Assessment Grades
+	private String saName; // Test Grades
+	private String CFUWeight;
+	private String RAWeight;
+	private String SAWeight;
+
 	public Class() {
 		setName("");
 		setTeacher(new Teacher());
@@ -49,8 +57,8 @@ public class Class {
 	}
 
 	public JsonObject getJsonData() {
-		JsonObject res = new JsonObject().add("name", name).add("grade", getGrade()).add("teacher",
-				teacher.getJsonData());
+		JsonObject res = new JsonObject().add("name", name).add("grade", getGrade()).add(cfuName, CFUWeight)
+				.add(raName, RAWeight).add(saName, SAWeight).add("teacher", teacher.getJsonData());
 		JsonArray assignments = new JsonArray();
 		for (Assignment a : assigns) {
 			assignments.add(a.getJsonData());
@@ -109,5 +117,53 @@ public class Class {
 
 	public void setQuarter(int quarter) {
 		this.quarter = quarter;
+	}
+
+	public String getCFUWeight() {
+		return CFUWeight;
+	}
+
+	public void setCFUWeight(String cFUWeight) {
+		CFUWeight = cFUWeight;
+	}
+
+	public String getRAWeight() {
+		return RAWeight;
+	}
+
+	public void setRAWeight(String rAWeight) {
+		RAWeight = rAWeight;
+	}
+
+	public String getSAWeight() {
+		return SAWeight;
+	}
+
+	public void setSAWeight(String sAWeight) {
+		SAWeight = sAWeight;
+	}
+
+	public String getCfuName() {
+		return cfuName;
+	}
+
+	public void setCfuName(String cfuName) {
+		this.cfuName = cfuName;
+	}
+
+	public String getRaName() {
+		return raName;
+	}
+
+	public void setRaName(String raName) {
+		this.raName = raName;
+	}
+
+	public String getSaName() {
+		return saName;
+	}
+
+	public void setSaName(String saName) {
+		this.saName = saName;
 	}
 }

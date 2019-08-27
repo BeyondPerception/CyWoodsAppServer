@@ -10,6 +10,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.sun.javafx.binding.SelectBinding.AsInteger;
+
 import ml.dent.object.student.Assignment;
 import ml.dent.object.student.Class;
 import ml.dent.object.student.Student;
@@ -267,6 +269,25 @@ public class StudentFetcher extends AbstractFetcher {
 				// Adding Assignment to Student;
 				curClass.addAssign(cur);
 			}
+
+			// Getting the weights for each category
+			Elements categoryTable = assignmentList
+					.selectFirst("#plnMain_rptAssigmnetsByCourse_dgCourseCategories_0 > tbody:nth-child(1)")
+					.select("tr");
+
+			// First row is titles, last row is totales
+			Elements cfuRow = categoryTable.get(1).select("td");
+			Elements raRow = categoryTable.get(2).select("td");
+			Elements saRow = categoryTable.get(3).select("td");
+
+			curClass.setCfuName(cfuRow.get(0).text());
+			curClass.setCFUWeight(cfuRow.get(1).text() + "/" + cfuRow.get(2));
+
+			curClass.setRaName(raRow.get(0).text());
+			curClass.setRAWeight(raRow.get(1).text() + "/" + raRow.get(2));
+
+			curClass.setSaName(saRow.get(0).text());
+			curClass.setSAWeight(saRow.get(1).text() + "/" + saRow.get(2));
 		}
 	}
 
