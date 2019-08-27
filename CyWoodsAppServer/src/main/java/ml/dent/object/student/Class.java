@@ -28,22 +28,19 @@ public class Class {
 		setGrade(Double.NaN);
 		setAssigns(new ArrayList<Assignment>());
 		setQuarter(1);
+		setCfuName("DG");
+		setRaName("AS");
+		setSaName("TE");
 	}
 
 	public Class(String n) {
+		this();
 		setName(n);
-		setTeacher(new Teacher());
-		setGrade(Double.NaN);
-		setAssigns(new ArrayList<Assignment>());
-		setQuarter(1);
 	}
 
 	public Class(String n, String t, ArrayList<Assignment> a) {
-		setName(n);
-		setTeacher(new Teacher());
-		setGrade(Double.NaN);
+		this(n);
 		setAssigns(a);
-		setQuarter(1);
 	}
 
 	/**
