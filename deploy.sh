@@ -6,7 +6,7 @@ echo "Entering maven project: CyWoodsAppServer"
 cd CyWoodsAppServer
 
 echo "Starting maven build process"
-mvn clean package >> /dev/null
+mvn clean package
 if [[ "$?" -ne 0 ]] ; then
   echo 'Failed to build maven project'
   echo "Exiting..."
