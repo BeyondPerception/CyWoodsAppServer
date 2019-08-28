@@ -275,32 +275,56 @@ public class StudentFetcher extends AbstractFetcher {
 			if (!categoryTable.isEmpty()) {
 				categoryTable = categoryTable.first().select("tr");
 				// First row is titles, last row is totales
-				Elements cfuRow = categoryTable.get(1).select("td");
-				Elements raRow = categoryTable.get(2).select("td");
-				Elements saRow = categoryTable.get(3).select("td");
-
-				curClass.setCfuName(cfuRow.get(0).text());
-				curClass.setCFUPoints(cfuRow.get(1).text() + "/" + cfuRow.get(2).text());
+				Elements cfuRow;
 				try {
-					curClass.setCfuWeight(Double.parseDouble(cfuRow.get(4).text()) / 100);
-				} catch (NumberFormatException e) {
-					System.err.println("Failed to parse CFU weight");
+					cfuRow = categoryTable.get(1).select("td");
+				} catch (IndexOutOfBoundsException e) {
+					// May be it doesn't exist, that's ok
+					cfuRow = null;
+				}
+				Elements raRow;
+				try {
+					raRow = categoryTable.get(2).select("td");
+				} catch (IndexOutOfBoundsException e) {
+					// May be it doesn't exist, that's ok
+					raRow = null;
+				}
+				Elements saRow;
+				try {
+					saRow = categoryTable.get(3).select("td");
+				} catch (IndexOutOfBoundsException e) {
+					// May be it doesn't exist, that's ok
+					saRow = null;
 				}
 
-				curClass.setRaName(raRow.get(0).text());
-				curClass.setRAPoints(raRow.get(1).text() + "/" + raRow.get(2).text());
-				try {
-					curClass.setRaWeight(Double.parseDouble(raRow.get(4).text()) / 100);
-				} catch (NumberFormatException e) {
-					System.err.println("Failed to parse RA weight");
+				if (cfuRow != null && !cfuRow.get(0).text().contains("Total")) {
+					curClass.setCfuName(cfuRow.get(0).text());
+					curClass.setCFUPoints(cfuRow.get(1).text() + "/" + cfuRow.get(2).text());
+					try {
+						curClass.setCfuWeight(Double.parseDouble(cfuRow.get(4).text()) / 100);
+					} catch (NumberFormatException e) {
+						System.err.println("Failed to parse CFU weight");
+					}
 				}
 
-				curClass.setSaName(saRow.get(0).text());
-				curClass.setSAPoints(saRow.get(1).text() + "/" + saRow.get(2).text());
-				try {
-					curClass.setSaWeight(Double.parseDouble(saRow.get(4).text()) / 100);
-				} catch (NumberFormatException e) {
-					System.err.println("Failed to parse SA weight");
+				if (raRow != null && !raRow.get(0).text().contains("Total")) {
+					curClass.setRaName(raRow.get(0).text());
+					curClass.setRAPoints(raRow.get(1).text() + "/" + raRow.get(2).text());
+					try {
+						curClass.setRaWeight(Double.parseDouble(raRow.get(4).text()) / 100);
+					} catch (NumberFormatException e) {
+						System.err.println("Failed to parse RA weight");
+					}
+				}
+
+				if (saRow != null && !saRow.get(0).text().contains("Total")) {
+					curClass.setSaName(saRow.get(0).text());
+					curClass.setSAPoints(saRow.get(1).text() + "/" + saRow.get(2).text());
+					try {
+						curClass.setSaWeight(Double.parseDouble(saRow.get(4).text()) / 100);
+					} catch (NumberFormatException e) {
+						System.err.println("Failed to parse SA weight");
+					}
 				}
 			}
 		}
