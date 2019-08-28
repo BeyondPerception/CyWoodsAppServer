@@ -68,14 +68,14 @@ public class BugServlet extends HttpServlet {
 
 		String date = LocalDate.now().toString();
 
-		String bugDirPath = System.getProperty("user.home") + "/BugReports";
+		String bugDirPath = "/efs/BugReports";
 		File bugDir = new File(bugDirPath);
 
 		if (!bugDir.exists() || !bugDir.isDirectory()) {
 			bugDir.mkdir();
 		}
 
-		File bugReport = new File(System.getProperty("user.home") + "/BugReports/bugs-" + date);
+		File bugReport = new File("/efs/BugReports/bugs-" + date);
 
 		if (!bugReport.exists()) {
 			bugReport.createNewFile();

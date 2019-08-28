@@ -72,7 +72,7 @@ public class ScheduleServlet extends HttpServlet {
 		// system so we can use relative paths
 		// without the virtual context messing us up
 		// The schedule file must be in the user's home dir
-		String filePath = System.getProperty("user.home") + "/UpdateFiles/MonthlySchedules.txt";
+		String filePath = "/efs/UpdateFiles/MonthlySchedules.txt";
 
 		try {
 			// Using a scanner rather than something faster like a buffered reader because

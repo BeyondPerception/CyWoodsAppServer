@@ -62,7 +62,7 @@ public class NewsServlet extends HttpServlet {
 
 		res.add("news", newsArray);
 
-		String eventFilePath = System.getProperty("user.home") + "/UpdateFiles/Events.txt";
+		String eventFilePath = "/efs/UpdateFiles/Events.txt";
 		Scanner file = new Scanner(new File(eventFilePath));
 
 		JsonArray events = new JsonArray();
