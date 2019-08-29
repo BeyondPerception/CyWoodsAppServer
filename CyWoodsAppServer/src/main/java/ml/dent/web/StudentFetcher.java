@@ -126,7 +126,7 @@ public class StudentFetcher extends AbstractFetcher {
 	 * @return true if the login was successful, false otherwise.
 	 */
 	private String login() {
-		if (currentUser.getUsername().equals("s0") && currentUser.getPassword().equals("testing")) {
+		if (currentUser.getUsername().equals("s0") && currentUser.getPassword().equals("test")) {
 			// These are arbitrary logins that don't actually exist, but can be used to test
 			// stuff on the client side without actually changing anything on the client to
 			// be special.
@@ -447,6 +447,13 @@ public class StudentFetcher extends AbstractFetcher {
 	}
 
 	public void populateTestUser() {
-
+		currentUser.setName("Wildcat");
+		Class testClass = new Class("Computer Science");
+		testClass.setTeacher(new Teacher("Mr.Knapsack", "", ""));
+		testClass.setGrade(100.0);
+		Assignment testAssign = new Assignment("Labs", "Tests", "08/027/2019", "08/29/2019", "note", "100", 1.0, "99",
+				false);
+		testClass.addAssign(testAssign);
+		currentUser.addClass(testClass);
 	}
 }
