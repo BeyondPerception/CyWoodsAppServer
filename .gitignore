@@ -12,7 +12,7 @@ local.properties
 .settings/
 .loadpath
 .recommenders
-RemoteSystemTempFiles
+RemoteSystemsTempFiles/
 
 # External tool builders
 .externalToolBuilders/
