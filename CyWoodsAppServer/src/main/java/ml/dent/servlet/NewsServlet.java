@@ -40,7 +40,7 @@ public class NewsServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		response.setContentType("UTF-8");
+		response.setCharacterEncoding("UTF-8");
 		PrintWriter pw = response.getWriter();
 
 		NewsFetcher newsFetcher = new NewsFetcher();
@@ -90,8 +90,8 @@ public class NewsServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		response.setCharacterEncoding("UTF-8");
 		PrintWriter pw = response.getWriter();
 		pw.println(Default.BadGateway("POST reqs not allowed"));
 	}
-
 }

@@ -46,7 +46,7 @@ public class ScheduleServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		response.setContentType("UTF-8");
+		response.setCharacterEncoding("UTF-8");
 		// Prepare writer for response
 		PrintWriter pw = response.getWriter();
 
@@ -175,6 +175,7 @@ public class ScheduleServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		resp.setCharacterEncoding("UTF-8");
 		PrintWriter pw = resp.getWriter();
 		pw.println(Default.BadGateway("POST reqs not allowed"));
 	}

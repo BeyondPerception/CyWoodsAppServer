@@ -34,7 +34,7 @@ public class StudentServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("UTF-8");
+		resp.setCharacterEncoding("UTF-8");
 		PrintWriter pw = resp.getWriter();
 
 		pw.println(Default.BadRequest("GET Requests are not allowed!"));
@@ -49,7 +49,7 @@ public class StudentServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setContentType("UTF-8");
+		resp.setCharacterEncoding("UTF-8");
 		PrintWriter pw = resp.getWriter();
 
 		String username = req.getParameter("username");
