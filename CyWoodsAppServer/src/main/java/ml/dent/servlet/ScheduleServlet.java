@@ -46,6 +46,7 @@ public class ScheduleServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		response.setContentType("UTF-8");
 		// Prepare writer for response
 		PrintWriter pw = response.getWriter();
 

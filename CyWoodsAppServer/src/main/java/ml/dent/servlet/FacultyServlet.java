@@ -37,6 +37,7 @@ public class FacultyServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		response.setContentType("UTF-8");
 		PrintWriter pw = response.getWriter();
 
 		FacultyFetcher facultyFetcher = new FacultyFetcher();
@@ -64,6 +65,7 @@ public class FacultyServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		response.setContentType("UTF-8");
 		PrintWriter pw = response.getWriter();
 		pw.println(Default.BadGateway("POST reqs not allowed"));
 	}

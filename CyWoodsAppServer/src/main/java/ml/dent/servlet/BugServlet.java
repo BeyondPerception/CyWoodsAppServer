@@ -33,6 +33,7 @@ public class BugServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		response.setContentType("UTF-8");
 		PrintWriter pw = response.getWriter();
 		pw.println(Default.BadRequest("GET reqs not allowed!"));
 	}
@@ -43,6 +44,7 @@ public class BugServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		response.setContentType("UTF-8");
 		PrintWriter pw = response.getWriter();
 
 		String message = request.getParameter("message");

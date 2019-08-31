@@ -34,6 +34,7 @@ public class StudentServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		resp.setContentType("UTF-8");
 		PrintWriter pw = resp.getWriter();
 
 		pw.println(Default.BadRequest("GET Requests are not allowed!"));
@@ -48,24 +49,24 @@ public class StudentServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		resp.setContentType("UTF-8");
 		PrintWriter pw = resp.getWriter();
 
-		String user_encoded = req.getParameter("username");
-		String pass_encoded = req.getParameter("password");
+		String username = req.getParameter("username");
+		String password = req.getParameter("password");
 
-		if (user_encoded == null) {
+		if (username == null) {
 			pw.println(Default.BadRequest("No Username Provided"));
 			return;
 		}
-		if (pass_encoded == null) {
+		if (password == null) {
 			pw.println(Default.BadRequest("No Password Provided"));
 			return;
 		}
 
-		String username = user_encoded;
-		String password = pass_encoded;
+		String id = req.getParameter("id");
 
-		StudentFetcher grades = new StudentFetcher(username, password);
+		StudentFetcher grades = new StudentFetcher(username, password, id);
 		try {
 			String ret = grades.populateStudent();
 			if (ret.contains("false")) {
