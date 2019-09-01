@@ -2,6 +2,8 @@
 
 # This script deploys the new server to the testing enviornment
 
+REMOTE="dentHome"
+
 echo "Entering maven project: CyWoodsAppServer"
 cd CyWoodsAppServer
 
@@ -18,11 +20,11 @@ cd target
 
 echo "Cleaning tomcat webapps directory"
 password=$(cat ~/.ssh/password)
-expect -c 'spawn ssh dentHome "rm -rf apache-tomcat-9.0.21/webapps/*"; expect "*:"; send "'$password'\r"; expect eof'
+expect -c 'spawn ssh '$REMOTE' "rm -rf apache-tomcat-9.0.21/webapps/*"; expect "*:"; send "'$password'\r"; expect eof'
 
 echo "Starting file transfer to dentHome"
-expect -c 'spawn scp CyWoodsAppServer.war dentHome:apache-tomcat-9.0.21/webapps; expect "*:"; send "'$password'\r"; expect eof'
+expect -c 'spawn scp CyWoodsAppServer.war '$REMOTE':apache-tomcat-9.0.21/webapps; expect "*:"; send "'$password'\r"; expect eof'
 echo "Completed file transfer"
 
 echo "Restarting Server"
-expect -c 'spawn ssh dentHome "./apache-tomcat-9.0.21/bin/startup.sh"; expect "*:"; send "'$password'\r"; expect eof'
+expect -c 'spawn ssh '$REMOTE' "./apache-tomcat-9.0.21/bin/startup.sh"; expect "*:"; send "'$password'\r"; expect eof'
