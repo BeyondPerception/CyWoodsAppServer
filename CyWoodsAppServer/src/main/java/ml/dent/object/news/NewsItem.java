@@ -84,13 +84,6 @@ public class NewsItem implements Comparable<NewsItem> {
 			return -dateCompare;
 		}
 
-		if (other.type.equals("School News") && !type.equals("School News")) {
-			return 1;
-		}
-		if (!other.type.equals("School News") && type.equals("School News")) {
-			return -1;
-		}
-
 		return title.compareTo(other.title);
 	}
 
