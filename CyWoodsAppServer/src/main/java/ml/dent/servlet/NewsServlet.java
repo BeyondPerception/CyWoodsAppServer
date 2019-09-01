@@ -3,9 +3,9 @@ package ml.dent.servlet;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.TreeSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -52,7 +52,7 @@ public class NewsServlet extends HttpServlet {
 			return;
 		}
 
-		ArrayList<NewsItem> news = newsFetcher.getNews();
+		TreeSet<NewsItem> news = newsFetcher.getNews();
 
 		JsonObject res = new JsonObject();
 		JsonArray newsArray = new JsonArray();

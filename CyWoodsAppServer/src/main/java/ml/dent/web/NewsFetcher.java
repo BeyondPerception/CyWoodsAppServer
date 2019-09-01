@@ -3,8 +3,8 @@ package ml.dent.web;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Scanner;
+import java.util.TreeSet;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -22,20 +22,19 @@ public class NewsFetcher extends AbstractFetcher {
 	private static final String DISTRICT_NEWS_URL = "https://www.cfisd.net/en/news-media/district/";
 	private static final String APP_NEWS = "/efs/UpdateFiles/AppNews.txt";
 
-	private ArrayList<NewsItem> news;
+	private TreeSet<NewsItem> news;
 
 	private boolean fetched;
 
 	public NewsFetcher() {
-		news = new ArrayList<>();
+		news = new TreeSet<>();
 		fetched = false;
 	}
 
-	public ArrayList<NewsItem> getNews() throws IllegalStateException {
+	public TreeSet<NewsItem> getNews() throws IllegalStateException {
 		if (!fetched) {
 			throw new IllegalStateException("populateNews must be called first");
 		}
-		Collections.sort(news);
 		return news;
 	}
 
