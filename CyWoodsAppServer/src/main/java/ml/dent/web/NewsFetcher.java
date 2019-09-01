@@ -2,6 +2,7 @@ package ml.dent.web;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Scanner;
 
@@ -39,11 +40,34 @@ public class NewsFetcher extends AbstractFetcher {
 	}
 
 	public void populateNews() throws Exception {
-		fetchSchoolNews();
-		fetchDistrictNews();
-		fetchCrimsonConnection();
-		fetchAppNews();
-		fetched = true;
+		boolean[] failed = new boolean[4];
+		try {
+			fetchSchoolNews();
+		} catch (Exception e) {
+			// Continue trying to fetch
+			failed[0] = true;
+		}
+		try {
+			fetchDistrictNews();
+		} catch (Exception e) {
+			// Continue trying to fetch
+			failed[1] = true;
+		}
+		try {
+			fetchCrimsonConnection();
+		} catch (Exception e) {
+			// Continue trying to fetch
+			failed[2] = true;
+		}
+		try {
+			fetchAppNews();
+		} catch (Exception e) {
+			// Continue trying to fetch
+			failed[3] = true;
+		}
+		if (!Arrays.equals(failed, new boolean[] { true, true, true, true })) {
+			fetched = true;
+		}
 	}
 
 	private void fetchSchoolNews() throws Exception {
