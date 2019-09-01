@@ -1,15 +1,16 @@
 package ml.dent.web;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import javafx.concurrent.Task;
 import ml.dent.object.news.AppNewsItem;
 import ml.dent.object.news.CrimsonConnectionNewsItem;
 import ml.dent.object.news.DistrictNewsItem;
@@ -26,9 +27,28 @@ public class NewsFetcher extends AbstractFetcher {
 
 	private boolean fetched;
 
+	private AtomicBoolean[] fin;
+
 	public NewsFetcher() {
 		news = new TreeSet<>();
 		fetched = false;
+		fin = new AtomicBoolean[4];
+		for (int i = 0; i < fin.length; i++) {
+			fin[i] = new AtomicBoolean();
+		}
+	}
+
+	// Returns true if this class has completed its task
+	public boolean ready() {
+		boolean res = true;
+
+		for (AtomicBoolean bool : fin) {
+			if (!bool.get()) {
+				res = false;
+				return res;
+			}
+		}
+		return res;
 	}
 
 	public TreeSet<NewsItem> getNews() throws IllegalStateException {
@@ -40,32 +60,67 @@ public class NewsFetcher extends AbstractFetcher {
 
 	public void populateNews() throws Exception {
 		boolean[] failed = new boolean[4];
-		try {
-			fetchSchoolNews();
-		} catch (Exception e) {
-			// Continue trying to fetch
-			failed[0] = true;
-		}
-		try {
-			fetchDistrictNews();
-		} catch (Exception e) {
-			// Continue trying to fetch
-			failed[1] = true;
-		}
-		try {
-			fetchCrimsonConnection();
-		} catch (Exception e) {
-			// Continue trying to fetch
-			failed[2] = true;
-		}
-		try {
-			fetchAppNews();
-		} catch (Exception e) {
-			// Continue trying to fetch
-			failed[3] = true;
-		}
+		Runnable task = new Runnable() {
+			@Override
+			public void run() {
+				try {
+					fetchSchoolNews();
+				} catch (Exception e) {
+					// Continue trying to fetch
+					failed[0] = true;
+				}
+				fin[0].set(true); // Thread completed
+			}
+		};
+		new Thread(task).start();
+
+		Runnable task1 = new Runnable() {
+			@Override
+			public void run() {
+				try {
+					fetchDistrictNews();
+				} catch (Exception e) {
+					// Continue trying to fetch
+					failed[1] = true;
+				}
+				fin[1].set(true);
+			}
+		};
+		new Thread(task1).start();
+
+		Runnable task2 = new Runnable() {
+			@Override
+			public void run() {
+				try {
+					fetchCrimsonConnection();
+				} catch (Exception e) {
+					// Continue trying to fetch
+					failed[2] = true;
+				}
+				fin[2].set(true);
+			}
+		};
+		new Thread(task2).start();
+
+		Runnable task3 = new Runnable() {
+			@Override
+			public void run() {
+				try {
+					fetchAppNews();
+				} catch (Exception e) {
+					// Continue trying to fetch
+					failed[3] = true;
+				}
+				fin[3].set(true);
+			}
+		};
+		new Thread(task3).start();
+
 		if (!Arrays.equals(failed, new boolean[] { true, true, true, true })) {
 			fetched = true;
+		}
+		while (!ready()) {
+			// block
 		}
 	}
 
