@@ -53,7 +53,7 @@ public class NewsServlet extends HttpServlet {
 		if (!newsCache.exists()) {
 			newsCache.createNewFile();
 			PrintWriter tmp = new PrintWriter(newsCache);
-			tmp.println(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
+			tmp.println(LocalDateTime.now().minus(61, ChronoUnit.MINUTES).toEpochSecond(ZoneOffset.UTC));
 			tmp.close();
 		}
 
