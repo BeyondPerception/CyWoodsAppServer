@@ -1,5 +1,7 @@
 package ml.dent.app;
 
+import java.io.File;
+
 public class LocalTest {
 	public static void main(String[] args) throws Exception {
 //		JsonObject test = new JsonObject();
@@ -48,10 +50,15 @@ public class LocalTest {
 //		Date d = new SimpleDateFormat("MM/dd/yy").parse("08/13/19");
 //		System.out.println(new SimpleDateFormat("MM/dd/yyyy").format(d));
 
+//		LocalDateTime start = LocalDateTime.now();
+//		Thread.sleep(10000);
+//		LocalDateTime now = LocalDateTime.now();
+//		System.out.println(start.toEpochSecond(ZoneOffset.UTC) - now.toEpochSecond(ZoneOffset.UTC));
+
 //		NewsFetcher nf = new NewsFetcher();
 //		nf.populateNews();
 //
-//		ArrayList<NewsItem> news = nf.getNews();
+//		TreeSet<NewsItem> news = nf.getNews();
 //
 //		JsonArray newsArray = new JsonArray();
 //
@@ -70,5 +77,23 @@ public class LocalTest {
 //		for (int i = 0; i < 3 && matcher.find(); i++) {
 //			line[i] = matcher.group();
 //		}
+
+//		AthleticsFetcher af = new AthleticsFetcher();
+//		af.populateGames();
+//
+//		Vector<AthleticItem> items = af.getGames();
+//
+//		JsonObject jO = new JsonObject();
+//
+//		JsonArray ja = new JsonArray();
+//
+//		for (AthleticItem ai : items) {
+//			ja.add(ai.getJsonData());
+//		}
+//
+//		jO.add("games", ja);
+//
+//		System.out.println(jO.format());
+
 	}
 }

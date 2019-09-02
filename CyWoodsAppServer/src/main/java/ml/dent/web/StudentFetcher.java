@@ -18,6 +18,7 @@ import ml.dent.object.student.Teacher;
 import ml.dent.object.student.Transcript.Block;
 import ml.dent.object.student.Transcript.Block.Course;
 import ml.dent.util.Default;
+import ml.dent.util.Logger;
 
 /**
  * This is the meat of the actual program, what fetches the documents from Home
@@ -52,14 +53,20 @@ public class StudentFetcher extends AbstractFetcher {
 
 	private boolean testUser;
 
+	private String userId;
+
+	private Logger logger;
+
 	/**
 	 * The username and password must be passed to the grade fetcher, otherwise it
 	 * can't do anything. These parameters are already decrypted, as all the
 	 * security in transferring information should be done within the servlet.
 	 */
-	public StudentFetcher(String username, String password) {
+	public StudentFetcher(String username, String password, String id) {
 		currentUser = new Student(username, password);
 		testUser = false;
+		userId = id;
+		logger = new Logger("Student");
 	}
 
 	/**
@@ -88,31 +95,47 @@ public class StudentFetcher extends AbstractFetcher {
 		try {
 			fetchWeekView();
 		} catch (Exception e) {
-			System.err.println("Failed to fetch week view");
-			e.printStackTrace();
+			logger.log("ID: " + userId);
+			logger.log("Failed to fetch grades");
+			logger.logError(e);
+			logger.log("START RESPONSE");
+			logger.log(currentUser.getJsonData().format());
+			logger.log("END RESPONSE");
 			return Default.BadGateway("Failed to fetch grades");
 		}
 		try {
 			fetchAssignments();
 		} catch (Exception e) {
-			System.err.println("Failed to fetch assignments");
-			e.printStackTrace();
+			logger.log("ID: " + userId);
+			logger.log("Failed to fetch assignments");
+			logger.logError(e);
+			logger.log("START RESPONSE");
+			logger.log(currentUser.getJsonData().format());
+			logger.log("END RESPONSE");
 			return Default.BadGateway("Failed to fetch assignments");
 		}
 
 		try {
 			fetchTranscript();
 		} catch (Exception e) {
-			System.err.println("Failed to fetch transcript");
-			e.printStackTrace();
+			logger.log("ID: " + userId);
+			logger.log("Failed to fetch transcript");
+			logger.logError(e);
+			logger.log("START RESPONSE");
+			logger.log(currentUser.getJsonData().format());
+			logger.log("END RESPONSE");
 			return Default.BadGateway("Failed to fetch transcript");
 		}
 
 		try {
 			fetchAttendance();
 		} catch (Exception e) {
-			System.out.println("Failed to fetch attendance");
-			e.printStackTrace();
+			logger.log("ID: " + userId);
+			logger.log("Failed to fetch attendance");
+			logger.logError(e);
+			logger.log("START RESPONSE");
+			logger.log(currentUser.getJsonData().format());
+			logger.log("END RESPONSE");
 			return Default.BadGateway("Failed to fetch attendance");
 		}
 
