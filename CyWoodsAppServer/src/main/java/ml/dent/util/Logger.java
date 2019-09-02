@@ -57,6 +57,7 @@ public class Logger {
 	public void logError(Exception e) {
 		check();
 		e.printStackTrace(pw);
+		e.printStackTrace();
 		pw.println();
 		pw.flush();
 	}

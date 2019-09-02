@@ -58,6 +58,7 @@ public class StudentServlet extends HttpServlet {
 
 		String username = req.getParameter("username");
 		String password = req.getParameter("password");
+		String id = req.getParameter("id");
 
 		if (username == null) {
 			pw.println(Default.BadRequest("No Username Provided"));
@@ -67,8 +68,10 @@ public class StudentServlet extends HttpServlet {
 			pw.println(Default.BadRequest("No Password Provided"));
 			return;
 		}
-
-		String id = req.getParameter("id");
+		if (id == null) {
+			pw.println(Default.BadRequest("No ID Provided"));
+			return;
+		}
 
 		StudentFetcher grades = new StudentFetcher(username, password, id);
 		try {
