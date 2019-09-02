@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import ml.dent.json.JsonArray;
 import ml.dent.json.JsonObject;
 import ml.dent.util.Default;
+import ml.dent.util.Logger;
 
 /**
  * This servlet gets queried when the client wants to know the schedule for the
@@ -29,11 +30,14 @@ import ml.dent.util.Default;
 public class ScheduleServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	private Logger logger;
+
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public ScheduleServlet() {
 		super();
+		logger = new Logger("Schedule");
 	}
 
 	/**
@@ -164,8 +168,8 @@ public class ScheduleServlet extends HttpServlet {
 
 		} catch (Exception e) {
 			pw.println(Default.InternalServerError("Failed to parse schedule file!"));
-			System.out.println("Failed to parse schedule file!");
-			e.printStackTrace();
+			logger.log("Failed to parse schedule file!");
+			logger.logError(e);
 		}
 	}
 

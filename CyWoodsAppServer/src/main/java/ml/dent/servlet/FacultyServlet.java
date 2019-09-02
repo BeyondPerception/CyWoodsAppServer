@@ -14,6 +14,7 @@ import ml.dent.json.JsonArray;
 import ml.dent.json.JsonObject;
 import ml.dent.object.student.Teacher;
 import ml.dent.util.Default;
+import ml.dent.util.Logger;
 import ml.dent.web.FacultyFetcher;
 
 /**
@@ -23,12 +24,14 @@ import ml.dent.web.FacultyFetcher;
 public class FacultyServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	Logger logger;
+
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public FacultyServlet() {
 		super();
-		// TODO Auto-generated constructor stub
+		logger = new Logger("Faculty");
 	}
 
 	/**
@@ -45,7 +48,8 @@ public class FacultyServlet extends HttpServlet {
 			facultyFetcher.fetchFaculty();
 		} catch (IOException e) {
 			pw.println(Default.InternalServerError("Failed to fetch faculty"));
-			e.printStackTrace();
+			logger.log("Failed to fetch faculty");
+			logger.logError(e);
 		}
 
 		ArrayList<Teacher> fac = facultyFetcher.getFaculty();

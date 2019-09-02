@@ -22,6 +22,7 @@ import ml.dent.json.JsonArray;
 import ml.dent.json.JsonObject;
 import ml.dent.object.news.NewsItem;
 import ml.dent.util.Default;
+import ml.dent.util.Logger;
 import ml.dent.web.NewsFetcher;
 
 /**
@@ -31,11 +32,14 @@ import ml.dent.web.NewsFetcher;
 public class NewsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	private Logger logger;
+
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public NewsServlet() {
 		super();
+		logger = new Logger("News");
 	}
 
 	/**
@@ -44,90 +48,95 @@ public class NewsServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		response.setCharacterEncoding("UTF-8");
-		PrintWriter pw = response.getWriter();
-
-		// We cache news and only update every hour to save time on the frontend
-		// Check if the news cache exists
-		File newsCache = new File("/efs/UpdateFiles/NewsCache.txt");
-		if (!newsCache.exists()) {
-			newsCache.createNewFile();
-			PrintWriter tmp = new PrintWriter(newsCache);
-			tmp.println(LocalDateTime.now().minus(61, ChronoUnit.MINUTES).toEpochSecond(ZoneOffset.UTC));
-			tmp.close();
-		}
-
-		// Prepare to read the cache
-		BufferedReader br = new BufferedReader(new FileReader(newsCache)); // Buffered Reader because very little
-																			// parsing
-		long lastFetch;
 		try {
-			lastFetch = Long.parseLong(br.readLine());
-		} catch (IOException | NumberFormatException e) {
-			// If the file is empty;
-			lastFetch = LocalDateTime.now().minus(61, ChronoUnit.MINUTES).toEpochSecond(ZoneOffset.UTC);
-		}
-		long now = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+			response.setCharacterEncoding("UTF-8");
+			PrintWriter pw = response.getWriter();
 
-		final long ONEHOURINSECONDS = 3600;
-		if ((now - ONEHOURINSECONDS) - lastFetch >= 0) {
-			// It has been at least one hour since the last fetch
-			NewsFetcher newsFetcher = new NewsFetcher();
+			// We cache news and only update every hour to save time on the frontend
+			// Check if the news cache exists
+			File newsCache = new File("/efs/UpdateFiles/NewsCache.txt");
+			if (!newsCache.exists()) {
+				newsCache.createNewFile();
+				PrintWriter tmp = new PrintWriter(newsCache);
+				tmp.println(LocalDateTime.now().minus(61, ChronoUnit.MINUTES).toEpochSecond(ZoneOffset.UTC));
+				tmp.close();
+			}
+
+			// Prepare to read the cache
+			BufferedReader br = new BufferedReader(new FileReader(newsCache)); // Buffered Reader because very little
+																				// parsing
+			long lastFetch;
 			try {
-				newsFetcher.populateNews();
-			} catch (Exception e) {
-				pw.println(Default.InternalServerError("failed to fetch news"));
-				e.printStackTrace();
-				br.close();
-				return;
+				lastFetch = Long.parseLong(br.readLine());
+			} catch (IOException | NumberFormatException e) {
+				// If the file is empty;
+				lastFetch = LocalDateTime.now().minus(61, ChronoUnit.MINUTES).toEpochSecond(ZoneOffset.UTC);
 			}
+			long now = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
 
-			Set<NewsItem> news = newsFetcher.getNews();
-
-			JsonObject res = new JsonObject();
-			JsonArray newsArray = new JsonArray();
-
-			for (NewsItem val : news) {
-				newsArray.add(val.getJsonData());
-			}
-
-			res.add("news", newsArray);
-
-			String eventFilePath = "/efs/UpdateFiles/Events.txt";
-			Scanner file = new Scanner(new File(eventFilePath));
-
-			JsonArray events = new JsonArray();
-			while (file.hasNext()) {
+			final long ONEHOURINSECONDS = 3600;
+			if ((now - ONEHOURINSECONDS) - lastFetch >= 0) {
+				// It has been at least one hour since the last fetch
+				NewsFetcher newsFetcher = new NewsFetcher();
 				try {
-					events.add(new JsonObject().add("title", file.nextLine()).add("dates", file.nextLine()));
-					file.nextLine();
-				} catch (NoSuchElementException e) {
-					// shhh...
+					newsFetcher.populateNews();
+				} catch (Exception e) {
+					pw.println(Default.InternalServerError("failed to fetch news"));
+					e.printStackTrace();
+					br.close();
+					return;
 				}
+
+				Set<NewsItem> news = newsFetcher.getNews();
+
+				JsonObject res = new JsonObject();
+				JsonArray newsArray = new JsonArray();
+
+				for (NewsItem val : news) {
+					newsArray.add(val.getJsonData());
+				}
+
+				res.add("news", newsArray);
+
+				String eventFilePath = "/efs/UpdateFiles/Events.txt";
+				Scanner file = new Scanner(new File(eventFilePath));
+
+				JsonArray events = new JsonArray();
+				while (file.hasNext()) {
+					try {
+						events.add(new JsonObject().add("title", file.nextLine()).add("dates", file.nextLine()));
+						file.nextLine();
+					} catch (NoSuchElementException e) {
+						// shhh...
+					}
+				}
+				file.close();
+				res.add("events", events);
+
+				// Print the newly fetched data to a caching file
+				newsCache.delete();
+				newsCache.createNewFile();
+				PrintWriter cacheWriter = new PrintWriter(newsCache);
+				cacheWriter.println(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
+				cacheWriter.println(res.format());
+				cacheWriter.close();
+
+				pw.println(res.format());
+			} else {
+				// Just read the cached file
+				StringBuilder sb = new StringBuilder();
+				String read;
+				while ((read = br.readLine()) != null) {
+					sb.append(read).append("\n");
+				}
+
+				pw.println(sb.toString().trim());
 			}
-			file.close();
-			res.add("events", events);
-
-			// Print the newly fetched data to a caching file
-			newsCache.delete();
-			newsCache.createNewFile();
-			PrintWriter cacheWriter = new PrintWriter(newsCache);
-			cacheWriter.println(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
-			cacheWriter.println(res.format());
-			cacheWriter.close();
-
-			pw.println(res.format());
-		} else {
-			// Just read the cached file
-			StringBuilder sb = new StringBuilder();
-			String read;
-			while ((read = br.readLine()) != null) {
-				sb.append(read).append("\n");
-			}
-
-			pw.println(sb.toString().trim());
+			br.close();
+		} catch (Exception e) {
+			logger.log("Failed to get news");
+			logger.logError(e);
 		}
-		br.close();
 	}
 
 	/**

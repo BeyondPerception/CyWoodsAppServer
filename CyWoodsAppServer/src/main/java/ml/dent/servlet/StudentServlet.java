@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ml.dent.util.Default;
+import ml.dent.util.Logger;
 import ml.dent.web.StudentFetcher;
 
 /**
@@ -23,8 +24,11 @@ import ml.dent.web.StudentFetcher;
 public class StudentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	private Logger logger;
+
 	public StudentServlet() {
 		super();
+		logger = new Logger("Student");
 	}
 
 	/**
@@ -76,6 +80,8 @@ public class StudentServlet extends HttpServlet {
 			}
 		} catch (Exception e) {
 			pw.println(Default.InternalServerError("Failed to fetch grades"));
+			logger.log("ID: " + id);
+			logger.logError(e);
 		}
 		/*
 		 * Scanner file = new Scanner(new File(System.getProperty("user.home") +
