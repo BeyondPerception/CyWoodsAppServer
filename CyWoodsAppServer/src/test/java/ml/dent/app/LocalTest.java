@@ -1,6 +1,8 @@
 package ml.dent.app;
 
-import java.io.File;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
 
 public class LocalTest {
 	public static void main(String[] args) throws Exception {
@@ -94,6 +96,9 @@ public class LocalTest {
 //		jO.add("games", ja);
 //
 //		System.out.println(jO.format());
-
+		
+		Date d = new SimpleDateFormat("MMMM dd yyyy").parse("September 1 2019");
+		
+		System.out.println(LocalDate.now());
 	}
 }

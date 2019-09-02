@@ -1,8 +1,11 @@
 package ml.dent.web;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jsoup.Connection.Method;
@@ -506,7 +509,7 @@ public class StudentFetcher extends AbstractFetcher {
 	/**
 	 * Fetches monthly attendance from HAC
 	 */
-	private void fetchAttendance() throws IOException {
+	private void fetchAttendance() throws IOException, ParseException {
 		Document monthlyView = getDocument(HAC_ATTENDANCE_URL);
 		Elements calendarRows = monthlyView.select("#plnMain_cldAttendance > tbody:nth-child(1)").select("tr");
 
@@ -524,10 +527,16 @@ public class StudentFetcher extends AbstractFetcher {
 
 				boolean isSchoolClosed = day.attr("style").contains("background-color:#CCCCCC");
 
+				String year = LocalDate.now().toString().substring(0, 4);
+
 				if (!markers.isEmpty()) {
 					currentUser.getAttendance().addBlock(new AttendanceBlock(dayNum, markers));
 				} else if (isSchoolClosed) {
-					currentUser.getAttendance().addBlock(new AttendanceBlock(dayNum, "School Closed"));
+					Date date = new SimpleDateFormat("MMMM dd yyyy").parse(dayNum + " " + year);
+					String dayOfWeek = date.toString().substring(0, 3);
+					if (!dayOfWeek.equals("Sun") && !dayOfWeek.equals("Sat")) {
+						currentUser.getAttendance().addBlock(new AttendanceBlock(dayNum, "School Closed"));
+					}
 				}
 			}
 		}
