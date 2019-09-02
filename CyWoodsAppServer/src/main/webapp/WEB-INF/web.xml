@@ -28,6 +28,12 @@
 		<description></description>
 		<servlet-class>ml.dent.servlet.BugServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>AthleticServlet</servlet-name>
+		<display-name>AthleticServlet</display-name>
+		<description></description>
+		<servlet-class>ml.dent.servlet.AthleticServlet</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>ScheduleServlet</servlet-name>
 		<url-pattern>/ScheduleServlet</url-pattern>
@@ -43,5 +49,9 @@
 	<servlet-mapping>
 		<servlet-name>BugServlet</servlet-name>
 		<url-pattern>/BugServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AthleticServlet</servlet-name>
+		<url-pattern>/AthleticServlet</url-pattern>
 	</servlet-mapping>
 </web-app>
