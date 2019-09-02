@@ -10,7 +10,7 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-import java.util.TreeSet;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -82,7 +82,7 @@ public class NewsServlet extends HttpServlet {
 				return;
 			}
 
-			TreeSet<NewsItem> news = newsFetcher.getNews();
+			Set<NewsItem> news = newsFetcher.getNews();
 
 			JsonObject res = new JsonObject();
 			JsonArray newsArray = new JsonArray();

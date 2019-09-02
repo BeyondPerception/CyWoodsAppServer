@@ -2,7 +2,9 @@ package ml.dent.web;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -10,7 +12,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import javafx.concurrent.Task;
 import ml.dent.object.news.AppNewsItem;
 import ml.dent.object.news.CrimsonConnectionNewsItem;
 import ml.dent.object.news.DistrictNewsItem;
@@ -23,14 +24,15 @@ public class NewsFetcher extends AbstractFetcher {
 	private static final String DISTRICT_NEWS_URL = "https://www.cfisd.net/en/news-media/district/";
 	private static final String APP_NEWS = "/efs/UpdateFiles/AppNews.txt";
 
-	private TreeSet<NewsItem> news;
+	private Set<NewsItem> news;
 
 	private boolean fetched;
 
 	private AtomicBoolean[] fin;
 
 	public NewsFetcher() {
-		news = new TreeSet<>();
+		TreeSet<NewsItem> treeSet = new TreeSet<>();
+		news = Collections.synchronizedSet(treeSet);
 		fetched = false;
 		fin = new AtomicBoolean[4];
 		for (int i = 0; i < fin.length; i++) {
@@ -51,7 +53,7 @@ public class NewsFetcher extends AbstractFetcher {
 		return res;
 	}
 
-	public TreeSet<NewsItem> getNews() throws IllegalStateException {
+	public Set<NewsItem> getNews() throws IllegalStateException {
 		if (!fetched) {
 			throw new IllegalStateException("populateNews must be called first");
 		}
