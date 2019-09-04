@@ -1,8 +1,6 @@
 package ml.dent.app;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Date;
+import ml.dent.web.StudentFetcher;
 
 public class LocalTest {
 	public static void main(String[] args) throws Exception {
@@ -25,13 +23,13 @@ public class LocalTest {
 //		
 //		System.out.println(test.format());
 
-//		StudentFetcher grades = new StudentFetcher(username, password);
-//		long start = System.currentTimeMillis();
-//		String ret = grades.populateStudent();
-//		System.out.println(ret);
+		StudentFetcher grades = new StudentFetcher("s867147", "Cfisd0710", "BF42BAFB-709A-4C0C-9C80-83B66776BB29");
+		long start = System.currentTimeMillis();
+		String ret = grades.populateStudent();
+		System.out.println(ret);
 //		System.out.println(grades.returnStudent().getJsonData().format());
 //		System.out.println(System.currentTimeMillis() - start);
-//
+
 //		System.out.println(new JsonObject().add("08/10", "School Closed").add("08/11", "1 No Contact\n2 No Contact")
 //				.add("08/12", "1 No Contact").format());
 
@@ -97,8 +95,8 @@ public class LocalTest {
 //
 //		System.out.println(jO.format());
 		
-		Date d = new SimpleDateFormat("MMMM dd yyyy").parse("September 1 2019");
-		
-		System.out.println(LocalDate.now());
+//		Date d = new SimpleDateFormat("MMMM dd yyyy").parse("September 1 2019");
+//		
+//		System.out.println(LocalDate.now());
 	}
 }

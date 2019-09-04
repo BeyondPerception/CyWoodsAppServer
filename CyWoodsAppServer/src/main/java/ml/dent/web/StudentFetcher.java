@@ -202,8 +202,8 @@ public class StudentFetcher extends AbstractFetcher {
 			// block
 		}
 
-		if (ret.isEmpty()) {
-			return Default.OK("");
+		if (fin[0].get() == 0) {
+			return Default.OK(ret.trim());
 		}
 
 		return Default.BadGateway(ret.trim());
@@ -441,6 +441,11 @@ public class StudentFetcher extends AbstractFetcher {
 		Document transView = getDocument(HAC_TRANSCIRPT_URL);
 		Elements yearTable = transView.select(".sg-content-grid > table:nth-child(2) > tbody:nth-child(1)")
 				.select("tr");
+
+		if (yearTable.isEmpty()) {
+			// No transcript, no highschool credits
+			return;
+		}
 
 		for (int i = 0; i < yearTable.size() - 3; i++) {
 			Element row = yearTable.get(i);
