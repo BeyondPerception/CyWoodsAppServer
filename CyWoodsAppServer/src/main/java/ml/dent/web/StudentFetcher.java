@@ -114,48 +114,6 @@ public class StudentFetcher extends AbstractFetcher {
 			return loginRet;
 		}
 
-		Runnable task = new Runnable() {
-			@Override
-			public void run() {
-				try {
-					fetchWeekView();
-					fin[0].set(0);
-				} catch (Exception e) {
-					fin[0].set(1);
-					logger.log("ID: " + userId);
-					logger.log("Failed to fetch grades");
-					logger.logError(e);
-					logger.log("START RESPONSE");
-					logger.log(currentUser.getJsonData().format());
-					logger.log("END RESPONSE");
-					ret += "Failed to fetch grades ";
-				}
-			}
-		};
-		new Thread(task).start();
-
-		Runnable task1 = new Runnable() {
-			@Override
-			public void run() {
-				try {
-					while (fin[0].get() == -1) {
-					}
-					fetchAssignments();
-					fin[1].set(0);
-				} catch (Exception e) {
-					fin[1].set(1);
-					logger.log("ID: " + userId);
-					logger.log("Failed to fetch assignments");
-					logger.logError(e);
-					logger.log("START RESPONSE");
-					logger.log(currentUser.getJsonData().format());
-					logger.log("END RESPONSE");
-					ret += "Failed to fetch assignments ";
-				}
-			}
-		};
-		new Thread(task1).start();
-
 		Runnable task2 = new Runnable() {
 			@Override
 			public void run() {
@@ -197,6 +155,34 @@ public class StudentFetcher extends AbstractFetcher {
 			}
 		};
 		new Thread(task3).start();
+
+		try {
+			fetchWeekView();
+			fin[0].set(0);
+		} catch (Exception e) {
+			fin[0].set(1);
+			logger.log("ID: " + userId);
+			logger.log("Failed to fetch grades");
+			logger.logError(e);
+			logger.log("START RESPONSE");
+			logger.log(currentUser.getJsonData().format());
+			logger.log("END RESPONSE");
+			ret += "Failed to fetch grades ";
+		}
+
+		try {
+			fetchAssignments();
+			fin[1].set(0);
+		} catch (Exception e) {
+			fin[1].set(1);
+			logger.log("ID: " + userId);
+			logger.log("Failed to fetch assignments");
+			logger.logError(e);
+			logger.log("START RESPONSE");
+			logger.log(currentUser.getJsonData().format());
+			logger.log("END RESPONSE");
+			ret += "Failed to fetch assignments ";
+		}
 
 		while (!ready()) {
 			// block
