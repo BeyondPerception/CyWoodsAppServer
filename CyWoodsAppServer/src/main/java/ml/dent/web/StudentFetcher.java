@@ -295,9 +295,9 @@ public class StudentFetcher extends AbstractFetcher {
 	 */
 	private void fetchAssignments() throws IOException {
 		for (String className : currentUser.getClassList()) {
-			Runnable task = new Runnable() {
-				@Override
-				public void run() {
+//			Runnable task = new Runnable() {
+//				@Override
+//				public void run() {
 					Class curClass = currentUser.getClass(className);
 					Document assignmentList;
 					try {
@@ -345,7 +345,7 @@ public class StudentFetcher extends AbstractFetcher {
 						Assignment cur = new Assignment();
 						cur.setDateDue(dateDue);
 						cur.setDateAssigned(dateAssigned);
-						cur.setName(name.substring(0, name.length() - 2)); // Getting rid of weird "*" at the end of all
+						cur.setName(name.substring(0, name.length() - 2)); // Getting rid of weird " *" at the end of all
 																			// classes
 						cur.setCategory(category);
 						cur.setScore(score);
@@ -417,9 +417,9 @@ public class StudentFetcher extends AbstractFetcher {
 							}
 						}
 					}
-				}
-			};
-			new Thread(task).start();
+//				}
+//			};
+//			new Thread(task).start();
 		}
 	}
 

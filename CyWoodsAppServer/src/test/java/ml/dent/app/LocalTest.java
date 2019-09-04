@@ -23,11 +23,19 @@ public class LocalTest {
 //		
 //		System.out.println(test.format());
 
-		StudentFetcher grades = new StudentFetcher("s867147", "Cfisd0710", "BF42BAFB-709A-4C0C-9C80-83B66776BB29");
-		long start = System.currentTimeMillis();
+		StudentFetcher grades = new StudentFetcher("s692278", "Cfisd0207", "10");
+//		long start = System.currentTimeMillis();
 		String ret = grades.populateStudent();
 		System.out.println(ret);
-//		System.out.println(grades.returnStudent().getJsonData().format());
+		String test = grades.returnStudent().getJsonData().format();
+		if (test.contains("\"teacher\": {\n" + "        \"name\": \"ARMSTRONG, STACEY W\",\n"
+				+ "        \"email\": \"stacey.armstrong@cfisd.net\"\n" + "      },\n" + "      \"assignments\": [\n"
+				+ "        \n" + "      ]")) {
+			System.out.println(true);
+		} else {
+			System.out.println(false);
+		}
+
 //		System.out.println(System.currentTimeMillis() - start);
 
 //		System.out.println(new JsonObject().add("08/10", "School Closed").add("08/11", "1 No Contact\n2 No Contact")
@@ -94,7 +102,7 @@ public class LocalTest {
 //		jO.add("games", ja);
 //
 //		System.out.println(jO.format());
-		
+
 //		Date d = new SimpleDateFormat("MMMM dd yyyy").parse("September 1 2019");
 //		
 //		System.out.println(LocalDate.now());
