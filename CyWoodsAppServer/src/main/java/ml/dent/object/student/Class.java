@@ -7,6 +7,7 @@ import ml.dent.json.JsonObject;
 
 public class Class {
 	private String name;
+	private String id; // Same class, different casing, ik its dumb
 	private Teacher teacher;
 	private ArrayList<Assignment> assigns;
 	private double grade;
@@ -40,13 +41,14 @@ public class Class {
 		setSaWeight(Double.NaN);
 	}
 
-	public Class(String n) {
+	public Class(String n, String id) {
 		this();
 		setName(n);
+		setId(id);
 	}
 
-	public Class(String n, String t, ArrayList<Assignment> a) {
-		this(n);
+	public Class(String n, String id, String t, ArrayList<Assignment> a) {
+		this(n, id);
 		setAssigns(a);
 	}
 
@@ -57,7 +59,7 @@ public class Class {
 	 * empty period with this class.
 	 */
 	public static Class getFillerClass() {
-		return new Class("", "", new ArrayList<Assignment>());
+		return new Class("", "", "", new ArrayList<Assignment>());
 	}
 
 	public JsonObject getJsonData() {
@@ -196,5 +198,13 @@ public class Class {
 
 	public void setSaWeight(double saWeight) {
 		this.saWeight = saWeight;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 }

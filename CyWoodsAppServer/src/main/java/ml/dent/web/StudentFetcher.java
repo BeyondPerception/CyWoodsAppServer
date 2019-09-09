@@ -276,7 +276,7 @@ public class StudentFetcher extends AbstractFetcher {
 			teacherEmail = teacherEmail.substring(0, teacherEmail.indexOf("\""));
 
 			// Adding course and staff info to user
-			currentUser.addClass(courseName);
+			currentUser.addClass(courseName, courseName.toLowerCase());
 			currentUser.getClass(courseName).setTeacher(new Teacher(teacherName, teacherEmail, null));
 			currentUser.getClass(courseName).setHAC_id(Integer.parseInt(courseId));
 			currentUser.getClass(courseName).setQuarter(Integer.parseInt(quarter));
@@ -298,125 +298,123 @@ public class StudentFetcher extends AbstractFetcher {
 //			Runnable task = new Runnable() {
 //				@Override
 //				public void run() {
-					Class curClass = currentUser.getClass(className);
-					Document assignmentList;
+			Class curClass = currentUser.getClass(className.toLowerCase());
+			Document assignmentList;
+			try {
+				assignmentList = getDocument(assignmentURL(curClass.getHAC_id(), curClass.getQuarter()));
+			} catch (IOException e2) {
+				fin[1].set(1);
+				e2.printStackTrace();
+				return;
+			}
+			// Select all elements within assignment table
+			Elements table = assignmentList
+					.select("#plnMain_rptAssigmnetsByCourse_dgCourseAssignments_0 > tbody:nth-child(1)").select("tr");
+
+			for (Element assign : table) {
+				if (assign.selectFirst("td:nth-child(1)").text().equals("Date Due")) {
+					// First element in table which is header
+					continue;
+				}
+				String dateDue = assign.selectFirst("td:nth-child(1)").text();
+				String dateAssigned = assign.selectFirst("td:nth-child(2)").text();
+				String name = assign.selectFirst("td:nth-child(3)").text();
+				String category = assign.selectFirst("td:nth-child(4)").text();
+				String score = assign.selectFirst("td:nth-child(5)").ownText(); // So it doesn't pick up the
+																				// note
+				String note;
+				try {
+					note = assign.selectFirst("td:nth-child(5) > span:nth-child(1) > img:nth-child(1)").attr("title");
+				} catch (NullPointerException e1) {
+					// Not all assignments have notes
+					note = null;
+				}
+				String weight = assign.selectFirst("td:nth-child(6)").text();
+				String maxScore = assign.selectFirst("td:nth-child(8)").text();
+				String isExtraCredit = assign.selectFirst("td:nth-child(10)").text();
+
+				if (isExtraCredit.toLowerCase().replaceAll(" ", "").contains("extracredit")) {
+					isExtraCredit = "true";
+				} else {
+					isExtraCredit = "false";
+				}
+
+				// Adding the fetched elements to an Assignment
+				Assignment cur = new Assignment();
+				cur.setDateDue(dateDue);
+				cur.setDateAssigned(dateAssigned);
+				cur.setName(name.substring(0, name.length() - 2)); // Getting rid of weird " *" at the end of all
+																	// classes
+				cur.setCategory(category);
+				cur.setScore(score);
+				cur.setNote(note);
+				cur.setWeight(Double.parseDouble(weight));
+				cur.setMaxScore(maxScore);
+				cur.setExtraCredit(Boolean.parseBoolean(isExtraCredit));
+
+				// Adding Assignment to Student;
+				curClass.addAssign(cur);
+			}
+
+			// Getting the weights for each category
+			Elements categoryTable = assignmentList
+					.select("#plnMain_rptAssigmnetsByCourse_dgCourseCategories_0 > tbody:nth-child(1)");
+			// Make sure that there are weights
+			if (!categoryTable.isEmpty()) {
+				categoryTable = categoryTable.first().select("tr");
+				// First row is titles, last row is totales
+				Elements cfuRow;
+				try {
+					cfuRow = categoryTable.get(1).select("td");
+				} catch (IndexOutOfBoundsException e) {
+					// May be it doesn't exist, that's ok
+					cfuRow = null;
+				}
+				Elements raRow;
+				try {
+					raRow = categoryTable.get(2).select("td");
+				} catch (IndexOutOfBoundsException e) {
+					// May be it doesn't exist, that's ok
+					raRow = null;
+				}
+				Elements saRow;
+				try {
+					saRow = categoryTable.get(3).select("td");
+				} catch (IndexOutOfBoundsException e) {
+					// May be it doesn't exist, that's ok
+					saRow = null;
+				}
+
+				if (cfuRow != null && !cfuRow.get(0).text().contains("Total")) {
+					curClass.setCfuName(cfuRow.get(0).text());
+					curClass.setCFUPoints(cfuRow.get(1).text() + "/" + cfuRow.get(2).text());
 					try {
-						assignmentList = getDocument(assignmentURL(curClass.getHAC_id(), curClass.getQuarter()));
-					} catch (IOException e2) {
-						fin[1].set(1);
-						e2.printStackTrace();
-						return;
+						curClass.setCfuWeight(Double.parseDouble(cfuRow.get(4).text()) / 100);
+					} catch (NumberFormatException e) {
+						System.err.println("Failed to parse CFU weight");
 					}
-					// Select all elements within assignment table
-					Elements table = assignmentList
-							.select("#plnMain_rptAssigmnetsByCourse_dgCourseAssignments_0 > tbody:nth-child(1)")
-							.select("tr");
+				}
 
-					for (Element assign : table) {
-						if (assign.selectFirst("td:nth-child(1)").text().equals("Date Due")) {
-							// First element in table which is header
-							continue;
-						}
-						String dateDue = assign.selectFirst("td:nth-child(1)").text();
-						String dateAssigned = assign.selectFirst("td:nth-child(2)").text();
-						String name = assign.selectFirst("td:nth-child(3)").text();
-						String category = assign.selectFirst("td:nth-child(4)").text();
-						String score = assign.selectFirst("td:nth-child(5)").ownText(); // So it doesn't pick up the
-																						// note
-						String note;
-						try {
-							note = assign.selectFirst("td:nth-child(5) > span:nth-child(1) > img:nth-child(1)")
-									.attr("title");
-						} catch (NullPointerException e1) {
-							// Not all assignments have notes
-							note = null;
-						}
-						String weight = assign.selectFirst("td:nth-child(6)").text();
-						String maxScore = assign.selectFirst("td:nth-child(8)").text();
-						String isExtraCredit = assign.selectFirst("td:nth-child(10)").text();
-
-						if (isExtraCredit.toLowerCase().replaceAll(" ", "").contains("extracredit")) {
-							isExtraCredit = "true";
-						} else {
-							isExtraCredit = "false";
-						}
-
-						// Adding the fetched elements to an Assignment
-						Assignment cur = new Assignment();
-						cur.setDateDue(dateDue);
-						cur.setDateAssigned(dateAssigned);
-						cur.setName(name.substring(0, name.length() - 2)); // Getting rid of weird " *" at the end of all
-																			// classes
-						cur.setCategory(category);
-						cur.setScore(score);
-						cur.setNote(note);
-						cur.setWeight(Double.parseDouble(weight));
-						cur.setMaxScore(maxScore);
-						cur.setExtraCredit(Boolean.parseBoolean(isExtraCredit));
-
-						// Adding Assignment to Student;
-						curClass.addAssign(cur);
+				if (raRow != null && !raRow.get(0).text().contains("Total")) {
+					curClass.setRaName(raRow.get(0).text());
+					curClass.setRAPoints(raRow.get(1).text() + "/" + raRow.get(2).text());
+					try {
+						curClass.setRaWeight(Double.parseDouble(raRow.get(4).text()) / 100);
+					} catch (NumberFormatException e) {
+						System.err.println("Failed to parse RA weight");
 					}
+				}
 
-					// Getting the weights for each category
-					Elements categoryTable = assignmentList
-							.select("#plnMain_rptAssigmnetsByCourse_dgCourseCategories_0 > tbody:nth-child(1)");
-					// Make sure that there are weights
-					if (!categoryTable.isEmpty()) {
-						categoryTable = categoryTable.first().select("tr");
-						// First row is titles, last row is totales
-						Elements cfuRow;
-						try {
-							cfuRow = categoryTable.get(1).select("td");
-						} catch (IndexOutOfBoundsException e) {
-							// May be it doesn't exist, that's ok
-							cfuRow = null;
-						}
-						Elements raRow;
-						try {
-							raRow = categoryTable.get(2).select("td");
-						} catch (IndexOutOfBoundsException e) {
-							// May be it doesn't exist, that's ok
-							raRow = null;
-						}
-						Elements saRow;
-						try {
-							saRow = categoryTable.get(3).select("td");
-						} catch (IndexOutOfBoundsException e) {
-							// May be it doesn't exist, that's ok
-							saRow = null;
-						}
-
-						if (cfuRow != null && !cfuRow.get(0).text().contains("Total")) {
-							curClass.setCfuName(cfuRow.get(0).text());
-							curClass.setCFUPoints(cfuRow.get(1).text() + "/" + cfuRow.get(2).text());
-							try {
-								curClass.setCfuWeight(Double.parseDouble(cfuRow.get(4).text()) / 100);
-							} catch (NumberFormatException e) {
-								System.err.println("Failed to parse CFU weight");
-							}
-						}
-
-						if (raRow != null && !raRow.get(0).text().contains("Total")) {
-							curClass.setRaName(raRow.get(0).text());
-							curClass.setRAPoints(raRow.get(1).text() + "/" + raRow.get(2).text());
-							try {
-								curClass.setRaWeight(Double.parseDouble(raRow.get(4).text()) / 100);
-							} catch (NumberFormatException e) {
-								System.err.println("Failed to parse RA weight");
-							}
-						}
-
-						if (saRow != null && !saRow.get(0).text().contains("Total")) {
-							curClass.setSaName(saRow.get(0).text());
-							curClass.setSAPoints(saRow.get(1).text() + "/" + saRow.get(2).text());
-							try {
-								curClass.setSaWeight(Double.parseDouble(saRow.get(4).text()) / 100);
-							} catch (NumberFormatException e) {
-								System.err.println("Failed to parse SA weight");
-							}
-						}
+				if (saRow != null && !saRow.get(0).text().contains("Total")) {
+					curClass.setSaName(saRow.get(0).text());
+					curClass.setSAPoints(saRow.get(1).text() + "/" + saRow.get(2).text());
+					try {
+						curClass.setSaWeight(Double.parseDouble(saRow.get(4).text()) / 100);
+					} catch (NumberFormatException e) {
+						System.err.println("Failed to parse SA weight");
 					}
+				}
+			}
 //				}
 //			};
 //			new Thread(task).start();
@@ -552,7 +550,7 @@ public class StudentFetcher extends AbstractFetcher {
 
 	public void populateTestUser() {
 		currentUser.setName("Wildcat");
-		Class testClass = new Class("Computer Science");
+		Class testClass = new Class("Computer Science", "computer science");
 		testClass.setTeacher(new Teacher("Mr.Knapsack", "", ""));
 		testClass.setGrade(100.0);
 		Assignment testAssign = new Assignment("Labs", "Tests", "08/027/2019", "08/29/2019", "note", "100", 1.0, "99",

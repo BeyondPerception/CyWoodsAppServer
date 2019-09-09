@@ -93,8 +93,8 @@ public class Student {
 		classes.put(c.getName(), c);
 	}
 
-	public void addClass(String s) {
-		classes.put(s, new Class(s));
+	public void addClass(String s, String id) {
+		classes.put(id, new Class(s, id));
 	}
 
 	public Class getClass(String s) {
