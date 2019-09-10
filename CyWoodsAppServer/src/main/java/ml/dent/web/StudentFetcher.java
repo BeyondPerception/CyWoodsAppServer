@@ -257,7 +257,7 @@ public class StudentFetcher extends AbstractFetcher {
 			Element courseInfo = row.getElementById("courseName");
 			String courseName = courseInfo.text();
 
-			if (currentUser.getClass(courseName) != null) {
+			if (currentUser.getClass(courseName.toLowerCase()) != null) {
 				// You've probable seen it before, but HAC sometimes does this really dumb thing
 				// where it has duplicate classes around certain periods like lunch. So if the
 				// class already exists, skip this row.
@@ -277,14 +277,14 @@ public class StudentFetcher extends AbstractFetcher {
 
 			// Adding course and staff info to user
 			currentUser.addClass(courseName, courseName.toLowerCase());
-			currentUser.getClass(courseName).setTeacher(new Teacher(teacherName, teacherEmail, null));
-			currentUser.getClass(courseName).setHAC_id(Integer.parseInt(courseId));
-			currentUser.getClass(courseName).setQuarter(Integer.parseInt(quarter));
+			currentUser.getClass(courseName.toLowerCase()).setTeacher(new Teacher(teacherName, teacherEmail, null));
+			currentUser.getClass(courseName.toLowerCase()).setHAC_id(Integer.parseInt(courseId));
+			currentUser.getClass(courseName.toLowerCase()).setQuarter(Integer.parseInt(quarter));
 
 			String average = row.getElementById("average").text();
 			if (!average.isEmpty()) {
 				// For lunch and stuff
-				currentUser.getClass(courseName).setGrade(Double.parseDouble(average));
+				currentUser.getClass(courseName.toLowerCase()).setGrade(Double.parseDouble(average));
 			}
 		}
 	}
