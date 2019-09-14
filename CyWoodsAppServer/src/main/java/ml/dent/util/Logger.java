@@ -16,6 +16,8 @@ public class Logger {
 	private static final String LOG_DIR = "/efs/logs/";
 	private String logDir;
 
+	private static int count = 0;
+
 	private PrintWriter pw;
 
 	private static String currentDate;
@@ -32,7 +34,8 @@ public class Logger {
 	public Logger(String internalDir) {
 		currentDate = LocalDate.now().toString();
 		logDir = LOG_DIR + internalDir + "/";
-		logFile = new File(logDir + currentDate);
+		logFile = new File(logDir + currentDate + "-" + count);
+		count++;
 	}
 
 	private void check() {
@@ -43,7 +46,7 @@ public class Logger {
 		if (!currentDate.equals(LocalDate.now().toString())) {
 			currentDate = LocalDate.now().toString();
 		}
-		logFile = new File(logDir + currentDate);
+		logFile = new File(logDir + currentDate + "-" + count);
 		if (pw == null) {
 			try {
 				pw = new PrintWriter(logFile);
