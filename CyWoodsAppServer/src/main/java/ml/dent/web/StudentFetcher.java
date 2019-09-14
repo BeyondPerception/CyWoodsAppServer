@@ -488,19 +488,21 @@ public class StudentFetcher extends AbstractFetcher {
 					}
 				}
 			}
-
-			Elements gpaTable = transView
-					.selectFirst("#plnMain_rpTranscriptGroup_tblCumGPAInfo > tbody:nth-child(1) > tr:nth-child(2)")
-					.select("td");
-
-			String gpa = gpaTable.get(1).text();
-			String rank = gpaTable.get(2).text();
-
-			currentUser.getTranscript().setRank(rank);
 			try {
-				currentUser.getTranscript().setGpa(Double.parseDouble(gpa));
-			} catch (NumberFormatException e) {
-				currentUser.getTranscript().setGpa(Double.NaN);
+				Elements gpaTable = transView
+						.selectFirst("#plnMain_rpTranscriptGroup_tblCumGPAInfo > tbody:nth-child(1) > tr:nth-child(2)")
+						.select("td");
+
+				String gpa = gpaTable.get(1).text();
+				String rank = gpaTable.get(2).text();
+
+				currentUser.getTranscript().setRank(rank);
+				try {
+					currentUser.getTranscript().setGpa(Double.parseDouble(gpa));
+				} catch (NumberFormatException e) {
+					currentUser.getTranscript().setGpa(Double.NaN);
+				}
+			} catch (NullPointerException e) {
 			}
 		} catch (NullPointerException e) {
 			// Prob a freshman, prob got through my other check. I dont even know if the
