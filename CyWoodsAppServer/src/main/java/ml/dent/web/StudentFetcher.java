@@ -482,7 +482,7 @@ public class StudentFetcher extends AbstractFetcher {
 			}
 		}
 
-		Elements gpaTable = transView.getElementById("plnMain_rpTranscriptGroup_trGPA1").select("td");
+		Elements gpaTable = transView.selectFirst("#plnMain_rpTranscriptGroup_tblCumGPAInfo > tbody:nth-child(1) > tr:nth-child(2)").select("td");
 
 		String gpa = gpaTable.get(1).text();
 		String rank = gpaTable.get(2).text();
