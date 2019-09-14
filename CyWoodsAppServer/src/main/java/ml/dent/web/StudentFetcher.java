@@ -395,11 +395,11 @@ public class StudentFetcher extends AbstractFetcher {
 					curClass.setCfuName(cfuRow.get(0).text());
 					curClass.setCFUPoints(cfuRow.get(1).text() + "/" + cfuRow.get(2).text());
 					try {
-						Double cfuWeight = Double.parseDouble(cfuRow.get(4).text()) / 100;
+						double cfuWeight = Double.parseDouble(cfuRow.get(4).text()) / 100.0;
 						if (cfuWeight == 0) {
 							cfuWeight = Double.NaN;
 						}
-						curClass.setRaWeight(cfuWeight);
+						curClass.setCfuWeight(cfuWeight);
 					} catch (NumberFormatException e) {
 						System.err.println("Failed to parse CFU weight");
 					}
@@ -409,7 +409,7 @@ public class StudentFetcher extends AbstractFetcher {
 					curClass.setRaName(raRow.get(0).text());
 					curClass.setRAPoints(raRow.get(1).text() + "/" + raRow.get(2).text());
 					try {
-						Double raWeight = Double.parseDouble(raRow.get(4).text()) / 100;
+						double raWeight = Double.parseDouble(raRow.get(4).text()) / 100.0;
 						if (raWeight == 0) {
 							raWeight = Double.NaN;
 						}
@@ -423,11 +423,11 @@ public class StudentFetcher extends AbstractFetcher {
 					curClass.setSaName(saRow.get(0).text());
 					curClass.setSAPoints(saRow.get(1).text() + "/" + saRow.get(2).text());
 					try {
-						Double saWeight = Double.parseDouble(saRow.get(4).text()) / 100;
+						double saWeight = Double.parseDouble(saRow.get(4).text()) / 100.0;
 						if (saWeight == 0) {
 							saWeight = Double.NaN;
 						}
-						curClass.setRaWeight(saWeight);
+						curClass.setSaWeight(saWeight);
 					} catch (NumberFormatException e) {
 						System.err.println("Failed to parse SA weight");
 					}

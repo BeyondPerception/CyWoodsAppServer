@@ -28,14 +28,9 @@ public class LocalTest {
 		String ret = grades.populateStudent();
 		System.out.println(ret);
 		String test = grades.returnStudent().getJsonData().format();
-		if (test.contains("\"teacher\": {\n" + "        \"name\": \"ARMSTRONG, STACEY W\",\n"
-				+ "        \"email\": \"stacey.armstrong@cfisd.net\"\n" + "      },\n" + "      \"assignments\": [\n"
-				+ "        \n" + "      ]")) {
-			System.out.println(true);
-		} else {
-			System.out.println(false);
-		}
-
+		
+		System.out.println(test);
+		
 //		System.out.println(System.currentTimeMillis() - start);
 
 //		System.out.println(new JsonObject().add("08/10", "School Closed").add("08/11", "1 No Contact\n2 No Contact")
