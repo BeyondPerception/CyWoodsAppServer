@@ -431,75 +431,81 @@ public class StudentFetcher extends AbstractFetcher {
 		Document transView = getDocument(HAC_TRANSCIRPT_URL);
 		Elements yearTable = transView.select(".sg-content-grid > table:nth-child(2) > tbody:nth-child(1)")
 				.select("tr");
+		try {
+			if (yearTable.isEmpty()) {
+				// No transcript, no highschool credits
+				return;
+			}
 
-		if (yearTable.isEmpty()) {
-			// No transcript, no highschool credits
-			return;
-		}
+			for (int i = 0; i < yearTable.size() - 3; i++) {
+				Element row = yearTable.get(i);
+				Elements blocks = row.getElementsByClass("sg-transcript-group");
+				for (Element block : blocks) {
+					Elements tables = block.select("table");
 
-		for (int i = 0; i < yearTable.size() - 3; i++) {
-			Element row = yearTable.get(i);
-			Elements blocks = row.getElementsByClass("sg-transcript-group");
-			for (Element block : blocks) {
-				Elements tables = block.select("table");
+					Element info = tables.get(0);
+					Element coursesTable = tables.get(1);
+					Element totalCreditTable = tables.get(2);
 
-				Element info = tables.get(0);
-				Element coursesTable = tables.get(1);
-				Element totalCreditTable = tables.get(2);
+					Elements infoFirstRow = info.selectFirst("tbody").select("tr").first().select("td");
+					Elements infoSecondRow = info.selectFirst("tbody").select("tr").last().select("td");
 
-				Elements infoFirstRow = info.selectFirst("tbody").select("tr").first().select("td");
-				Elements infoSecondRow = info.selectFirst("tbody").select("tr").last().select("td");
+					String year = infoFirstRow.get(1).text();
+					String grade = infoFirstRow.get(5).text();
+					String building = infoSecondRow.get(1).text();
 
-				String year = infoFirstRow.get(1).text();
-				String grade = infoFirstRow.get(5).text();
-				String building = infoSecondRow.get(1).text();
+					Elements coursesList = coursesTable.selectFirst("tbody").select("tr");
+					ArrayList<Course> courses = new ArrayList<>();
 
-				Elements coursesList = coursesTable.selectFirst("tbody").select("tr");
-				ArrayList<Course> courses = new ArrayList<>();
+					for (Element course : coursesList) {
+						Elements rowElements = course.select("td");
 
-				for (Element course : coursesList) {
-					Elements rowElements = course.select("td");
+						String courseNum = rowElements.get(0).text();
+						String description = rowElements.get(1).text();
+						String sem1 = rowElements.get(2).text();
+						String sem2 = rowElements.get(3).text();
+						String credit = rowElements.get(4).text();
 
-					String courseNum = rowElements.get(0).text();
-					String description = rowElements.get(1).text();
-					String sem1 = rowElements.get(2).text();
-					String sem2 = rowElements.get(3).text();
-					String credit = rowElements.get(4).text();
+						if (courseNum.equals("Course")) {
+							continue;
+						}
 
-					if (courseNum.equals("Course")) {
-						continue;
+						try {
+							courses.add(new Course(description, courseNum, sem1, sem2, Double.parseDouble(credit)));
+						} catch (NumberFormatException e) {
+							courses.add(new Course(description, courseNum, sem1, sem2, Double.NaN));
+						}
 					}
+
+					String totalCredit = totalCreditTable.selectFirst("tbody").selectFirst("tr").select("td").get(3)
+							.text();
 
 					try {
-						courses.add(new Course(description, courseNum, sem1, sem2, Double.parseDouble(credit)));
+						currentUser.getTranscript()
+								.addBlock(new Block(year, building, grade, Double.parseDouble(totalCredit), courses));
 					} catch (NumberFormatException e) {
-						courses.add(new Course(description, courseNum, sem1, sem2, Double.NaN));
+						currentUser.getTranscript().addBlock(new Block(year, building, grade, Double.NaN, courses));
 					}
 				}
-
-				String totalCredit = totalCreditTable.selectFirst("tbody").selectFirst("tr").select("td").get(3).text();
-
-				try {
-					currentUser.getTranscript()
-							.addBlock(new Block(year, building, grade, Double.parseDouble(totalCredit), courses));
-				} catch (NumberFormatException e) {
-					currentUser.getTranscript().addBlock(new Block(year, building, grade, Double.NaN, courses));
-				}
 			}
-		}
 
-		Elements gpaTable = transView
-				.selectFirst("#plnMain_rpTranscriptGroup_tblCumGPAInfo > tbody:nth-child(1) > tr:nth-child(2)")
-				.select("td");
+			Elements gpaTable = transView
+					.selectFirst("#plnMain_rpTranscriptGroup_tblCumGPAInfo > tbody:nth-child(1) > tr:nth-child(2)")
+					.select("td");
 
-		String gpa = gpaTable.get(1).text();
-		String rank = gpaTable.get(2).text();
+			String gpa = gpaTable.get(1).text();
+			String rank = gpaTable.get(2).text();
 
-		currentUser.getTranscript().setRank(rank);
-		try {
-			currentUser.getTranscript().setGpa(Double.parseDouble(gpa));
-		} catch (NumberFormatException e) {
-			currentUser.getTranscript().setGpa(Double.NaN);
+			currentUser.getTranscript().setRank(rank);
+			try {
+				currentUser.getTranscript().setGpa(Double.parseDouble(gpa));
+			} catch (NumberFormatException e) {
+				currentUser.getTranscript().setGpa(Double.NaN);
+			}
+		} catch (NullPointerException e) {
+			// Prob a freshman, prob got through my other check. I dont even know if the
+			// other check works
+			return;
 		}
 	}
 
