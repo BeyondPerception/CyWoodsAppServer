@@ -254,7 +254,7 @@ public class StudentFetcher extends AbstractFetcher {
 
 		for (Element row : rows) {
 			// Course and staff information
-			Element courseInfo = row.getElementById("courseName");
+			Element courseInfo = row.selectFirst("td:nth-child(1) > div:nth-child(1) > a:nth-child(1)");
 			String courseName = courseInfo.text();
 
 			if (currentUser.getClass(courseName.toLowerCase()) != null) {
@@ -270,8 +270,8 @@ public class StudentFetcher extends AbstractFetcher {
 			String quarter = courseInfo.toString().substring(courseIndex + courseId.length() + 2,
 					courseIndex + courseId.length() + 3); // One character that is the quarter number;
 
-			String teacherName = row.getElementById("staffName").text();
-			String teacherEmail = row.getElementById("staffName").toString();
+			String teacherName = row.select("td:nth-child(1) > div:nth-child(1) > a:nth-child(3)").text();
+			String teacherEmail = row.select("td:nth-child(1) > div:nth-child(1) > a:nth-child(3)").toString();
 			teacherEmail = teacherEmail.substring(teacherEmail.indexOf(":") + 1);
 			teacherEmail = teacherEmail.substring(0, teacherEmail.indexOf("\""));
 
@@ -281,7 +281,7 @@ public class StudentFetcher extends AbstractFetcher {
 			currentUser.getClass(courseName.toLowerCase()).setHAC_id(Integer.parseInt(courseId));
 			currentUser.getClass(courseName.toLowerCase()).setQuarter(Integer.parseInt(quarter));
 
-			String average = row.getElementById("average").text();
+			String average = row.select("td:nth-child(2) > a:nth-child(1)").text();
 			if (!average.isEmpty()) {
 				// For lunch and stuff
 				currentUser.getClass(courseName.toLowerCase()).setGrade(Double.parseDouble(average));
@@ -482,7 +482,9 @@ public class StudentFetcher extends AbstractFetcher {
 			}
 		}
 
-		Elements gpaTable = transView.selectFirst("#plnMain_rpTranscriptGroup_tblCumGPAInfo > tbody:nth-child(1) > tr:nth-child(2)").select("td");
+		Elements gpaTable = transView
+				.selectFirst("#plnMain_rpTranscriptGroup_tblCumGPAInfo > tbody:nth-child(1) > tr:nth-child(2)")
+				.select("td");
 
 		String gpa = gpaTable.get(1).text();
 		String rank = gpaTable.get(2).text();
