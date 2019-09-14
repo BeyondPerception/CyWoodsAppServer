@@ -271,9 +271,15 @@ public class StudentFetcher extends AbstractFetcher {
 					courseIndex + courseId.length() + 3); // One character that is the quarter number;
 
 			String teacherName = row.select("td:nth-child(1) > div:nth-child(1) > a:nth-child(3)").text();
-			String teacherEmail = row.select("td:nth-child(1) > div:nth-child(1) > a:nth-child(3)").toString();
-			teacherEmail = teacherEmail.substring(teacherEmail.indexOf(":") + 1);
-			teacherEmail = teacherEmail.substring(0, teacherEmail.indexOf("\""));
+			String teacherEmail;
+			try {
+				teacherEmail = row.select("td:nth-child(1) > div:nth-child(1) > a:nth-child(3)").toString();
+
+				teacherEmail = teacherEmail.substring(teacherEmail.indexOf(":") + 1);
+				teacherEmail = teacherEmail.substring(0, teacherEmail.indexOf("\""));
+			} catch (Exception e) {
+				teacherEmail = null;
+			}
 
 			// Adding course and staff info to user
 			currentUser.addClass(courseName, courseName.toLowerCase());
