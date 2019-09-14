@@ -35,7 +35,7 @@ public class Class {
 		setQuarter(1);
 		setCfuName("DG");
 		setRaName("AS");
-		setSaName("TE");
+		setSaName("MG");
 		setCfuWeight(Double.NaN);
 		setRaWeight(Double.NaN);
 		setSaWeight(Double.NaN);
