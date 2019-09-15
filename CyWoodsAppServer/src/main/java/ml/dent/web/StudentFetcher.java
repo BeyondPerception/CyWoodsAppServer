@@ -576,14 +576,29 @@ public class StudentFetcher extends AbstractFetcher {
 				.append("&MARK_TITLE=9WK%20%20.Trim()&MARK_TYPE=9WK%20%20.Trim()&SLOT_INDEX=1").toString();
 	}
 
+	private static int newGradeCounter = 1; // test counter to add new grades to test user everytime it is refreshed
+
 	public void populateTestUser() {
+		if (newGradeCounter >= 100) {
+			newGradeCounter = 0;
+		}
 		currentUser.setName("Wildcat");
 		Class testClass = new Class("Computer Science", "computer science");
 		testClass.setTeacher(new Teacher("Mr.Knapsack", "", ""));
-		testClass.setGrade(100.0);
-		Assignment testAssign = new Assignment("Labs", "Tests", "08/027/2019", "08/29/2019", "note", "100", 1.0, "99",
-				false);
-		testClass.addAssign(testAssign);
+		testClass.setGrade(99.0);
+
+		for (int i = 0; i < newGradeCounter; i++) {
+			if (i % 2 == 0) {
+				Assignment testAssign = new Assignment("Labs" + i, "Tests", "08/027/2019", "08/29/2019", "note", "100",
+						1.0, "99", false);
+				testClass.addAssign(testAssign);
+			} else {
+				Assignment testAssign = new Assignment("Labs" + i, "Tests", "08/027/2019", "08/29/2019", "note", "5",
+						1.0, "5", true);
+				testClass.addAssign(testAssign);
+			}
+		}
 		currentUser.addClass(testClass);
+		newGradeCounter++;
 	}
 }
