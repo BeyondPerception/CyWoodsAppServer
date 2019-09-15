@@ -1,6 +1,8 @@
 package ml.dent.object.student;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.TreeSet;
 
 import ml.dent.json.JsonArray;
 import ml.dent.json.JsonObject;
@@ -16,16 +18,7 @@ public class Class {
 	private int quarter; // just in case quarters vary between classes.
 
 	// Weights Stuff
-	private String cfuName; // Daily Grades
-	private String raName; // Assessment Grades
-	private String saName; // Test Grades
-	private String CFUPoints;
-	private String RAPoints;
-	private String SAPoints;
-
-	private double cfuWeight;
-	private double raWeight;
-	private double saWeight;
+	private TreeSet<Category> categoryPoints;
 
 	public Class() {
 		setName("");
@@ -33,12 +26,7 @@ public class Class {
 		setGrade(Double.NaN);
 		setAssigns(new ArrayList<Assignment>());
 		setQuarter(1);
-		setCfuName("DG");
-		setRaName("AS");
-		setSaName("MG");
-		setCfuWeight(Double.NaN);
-		setRaWeight(Double.NaN);
-		setSaWeight(Double.NaN);
+		categoryPoints = new TreeSet<>();
 	}
 
 	public Class(String n, String id) {
@@ -52,22 +40,35 @@ public class Class {
 		setAssigns(a);
 	}
 
-	/**
-	 * Some people don't have 7 classes, but we still need some kind of filler to
-	 * buffer later classes. (e.g. If someone only has 6 classes, their 2nd period
-	 * would show up as their 1st period and we don't want that). We'll fill that
-	 * empty period with this class.
-	 */
-	public static Class getFillerClass() {
-		return new Class("", "", "", new ArrayList<Assignment>());
-	}
-
 	public JsonObject getJsonData() {
-		JsonObject res = new JsonObject().add("name", name).add("grade", getGrade())
-				.add("categoryPoints",
-						new JsonObject().add(cfuName, CFUPoints).add(raName, RAPoints).add(saName, SAPoints))
-				.add("weights", new JsonObject().add(cfuName, cfuWeight).add(raName, raWeight).add(saName, saWeight))
-				.add("teacher", teacher.getJsonData());
+		JsonObject res = new JsonObject().add("name", name).add("grade", getGrade()).add("teacher",
+				teacher.getJsonData());
+
+		if (categoryPoints.size() < 3) {
+			Category dg = new Category("DG", null, Double.NaN);
+			Category as = new Category("AS", null, Double.NaN);
+			Category mg = new Category("MG", null, Double.NaN);
+
+			if (!categoryPoints.contains(dg)) {
+				categoryPoints.add(dg);
+			}
+			if (!categoryPoints.contains(as)) {
+				categoryPoints.add(as);
+			}
+			if (!categoryPoints.contains(mg)) {
+				categoryPoints.add(mg);
+			}
+		}
+
+		JsonObject categoryContainer = new JsonObject();
+		JsonObject weightsContainer = new JsonObject();
+		for (Category val : categoryPoints) {
+			categoryContainer.add(val.getName(), val.getPoints());
+			weightsContainer.add(val.getName(), val.getWeight());
+		}
+		res.add("categoryPoints", categoryContainer);
+		res.add("weights", weightsContainer);
+
 		JsonArray assignments = new JsonArray();
 		for (Assignment a : assigns) {
 			assignments.add(a.getJsonData());
@@ -128,83 +129,110 @@ public class Class {
 		this.quarter = quarter;
 	}
 
-	public String getCFUPoints() {
-		return CFUPoints;
-	}
-
-	public void setCFUPoints(String cFUWeight) {
-		CFUPoints = cFUWeight;
-	}
-
-	public String getRAPoints() {
-		return RAPoints;
-	}
-
-	public void setRAPoints(String rAWeight) {
-		RAPoints = rAWeight;
-	}
-
-	public String getSAPoints() {
-		return SAPoints;
-	}
-
-	public void setSAPoints(String sAWeight) {
-		SAPoints = sAWeight;
-	}
-
-	public String getCfuName() {
-		return cfuName;
-	}
-
-	public void setCfuName(String cfuName) {
-		this.cfuName = cfuName;
-	}
-
-	public String getRaName() {
-		return raName;
-	}
-
-	public void setRaName(String raName) {
-		this.raName = raName;
-	}
-
-	public String getSaName() {
-		return saName;
-	}
-
-	public void setSaName(String saName) {
-		this.saName = saName;
-	}
-
-	public double getCfuWeight() {
-		return cfuWeight;
-	}
-
-	public void setCfuWeight(double cfuWeight) {
-		this.cfuWeight = cfuWeight;
-	}
-
-	public double getRaWeight() {
-		return raWeight;
-	}
-
-	public void setRaWeight(double raWeight) {
-		this.raWeight = raWeight;
-	}
-
-	public double getSaWeight() {
-		return saWeight;
-	}
-
-	public void setSaWeight(double saWeight) {
-		this.saWeight = saWeight;
-	}
-
 	public String getId() {
 		return id;
 	}
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public void addCategory(String name, String points, double weight) {
+		categoryPoints.add(new Category(name, points, weight));
+	}
+
+	// Below this line may seem like an overly complex way to store categories,
+	// because it is.
+	// The reason we are storing them like this is because different classes may
+	// have different names for each category, which is very annoying because the
+	// frontend expects to receive 3 categories with no duplicates. This is the only
+	// way I could think of doing that.
+	public enum Type {
+		DAILY_GRADE, ASSESMENT_GRADE, MAJOR_GRADE, UNKNOWN
+	}
+
+	private static HashSet<String> dailyNames;
+	private static HashSet<String> assesmentNames;
+	private static HashSet<String> majorNames;
+
+	static {
+		dailyNames = new HashSet<>();
+		assesmentNames = new HashSet<>();
+		majorNames = new HashSet<>();
+
+		dailyNames.add("CFU");
+		dailyNames.add("DG");
+
+		assesmentNames.add("RA");
+		assesmentNames.add("AS");
+
+		majorNames.add("SA");
+		majorNames.add("SU");
+		majorNames.add("MG");
+		majorNames.add("TE");
+	}
+
+	private class Category implements Comparable<Category> {
+		private String name;
+		private String points;
+		private double weight;
+		private int order; // 1, 2, or 3, tells the json assembler where to put this class
+		private Type type;
+
+		public Category(String name, String points, double weight) {
+			name = name.toUpperCase();
+			this.name = name;
+			this.points = points;
+			this.weight = weight;
+
+			if (dailyNames.contains(name)) {
+				type = Type.DAILY_GRADE;
+			} else if (assesmentNames.contains(name)) {
+				type = Type.ASSESMENT_GRADE;
+			} else if (majorNames.contains(name)) {
+				type = Type.MAJOR_GRADE;
+			} else {
+				type = Type.UNKNOWN;
+			}
+
+			if (type == Type.DAILY_GRADE) {
+				order = 1;
+			} else if (type == Type.ASSESMENT_GRADE) {
+				order = 2;
+			} else if (type == Type.MAJOR_GRADE) {
+				order = 3;
+			} else {
+				order = 4;
+			}
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public String getPoints() {
+			return points;
+		}
+
+		public double getWeight() {
+			return weight;
+		}
+
+		@Override
+		public int compareTo(Category o) {
+			if (type == o.type) {
+				return 0;
+			}
+			return Integer.compare(order, o.order);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof Category) {
+				Category o = (Category) obj;
+				return compareTo(o) == 0;
+			}
+			return false;
+		}
 	}
 }

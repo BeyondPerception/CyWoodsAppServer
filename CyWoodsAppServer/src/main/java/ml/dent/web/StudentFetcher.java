@@ -392,42 +392,42 @@ public class StudentFetcher extends AbstractFetcher {
 				}
 
 				if (cfuRow != null && !cfuRow.get(0).text().contains("Total")) {
-					curClass.setCfuName(cfuRow.get(0).text());
-					curClass.setCFUPoints(cfuRow.get(1).text() + "/" + cfuRow.get(2).text());
+					String name = cfuRow.get(0).text();
+					String points = cfuRow.get(1).text() + "/" + cfuRow.get(2).text();
 					try {
 						double cfuWeight = Double.parseDouble(cfuRow.get(4).text()) / 100.0;
 						if (cfuWeight == 0) {
 							cfuWeight = Double.NaN;
 						}
-						curClass.setCfuWeight(cfuWeight);
+						curClass.addCategory(name, points, cfuWeight);
 					} catch (NumberFormatException e) {
 						System.err.println("Failed to parse CFU weight");
 					}
 				}
 
 				if (raRow != null && !raRow.get(0).text().contains("Total")) {
-					curClass.setRaName(raRow.get(0).text());
-					curClass.setRAPoints(raRow.get(1).text() + "/" + raRow.get(2).text());
+					String name = raRow.get(0).text();
+					String points = raRow.get(1).text() + "/" + raRow.get(2).text();
 					try {
 						double raWeight = Double.parseDouble(raRow.get(4).text()) / 100.0;
 						if (raWeight == 0) {
 							raWeight = Double.NaN;
 						}
-						curClass.setRaWeight(raWeight);
+						curClass.addCategory(name, points, raWeight);
 					} catch (NumberFormatException e) {
 						System.err.println("Failed to parse RA weight");
 					}
 				}
 
 				if (saRow != null && !saRow.get(0).text().contains("Total")) {
-					curClass.setSaName(saRow.get(0).text());
-					curClass.setSAPoints(saRow.get(1).text() + "/" + saRow.get(2).text());
+					String name = saRow.get(0).text();
+					String points = saRow.get(1).text() + "/" + saRow.get(2).text();
 					try {
 						double saWeight = Double.parseDouble(saRow.get(4).text()) / 100.0;
 						if (saWeight == 0) {
 							saWeight = Double.NaN;
 						}
-						curClass.setSaWeight(saWeight);
+						curClass.addCategory(name, points, saWeight);
 					} catch (NumberFormatException e) {
 						System.err.println("Failed to parse SA weight");
 					}
