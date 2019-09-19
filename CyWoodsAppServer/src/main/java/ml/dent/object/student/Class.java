@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Stack;
 import java.util.TreeSet;
 
+import com.sun.javafx.binding.SelectBinding.AsInteger;
+
 import ml.dent.json.JsonArray;
 import ml.dent.json.JsonObject;
 
@@ -70,7 +72,8 @@ public class Class {
 		res.add("weights", weightsContainer);
 
 		JsonArray assignments = new JsonArray();
-		for (Assignment a : assigns) {
+		while (!assigns.isEmpty()) {
+			Assignment a = assigns.pop();
 			assignments.add(a.getJsonData());
 		}
 		res.add("assignments", assignments);
