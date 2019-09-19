@@ -1,7 +1,7 @@
 package ml.dent.object.student;
 
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Stack;
 import java.util.TreeSet;
 
 import ml.dent.json.JsonArray;
@@ -11,7 +11,7 @@ public class Class {
 	private String name;
 	private String id; // Same class, different casing, ik its dumb
 	private Teacher teacher;
-	private ArrayList<Assignment> assigns;
+	private Stack<Assignment> assigns; // So new assignments show up first
 	private double grade;
 	// For use in navigating HAC; should not be sent to client
 	private int HAC_id;
@@ -24,7 +24,7 @@ public class Class {
 		setName("");
 		setTeacher(new Teacher());
 		setGrade(Double.NaN);
-		setAssigns(new ArrayList<Assignment>());
+		setAssigns(new Stack<Assignment>());
 		setQuarter(1);
 		categoryPoints = new TreeSet<>();
 	}
@@ -35,7 +35,7 @@ public class Class {
 		setId(id);
 	}
 
-	public Class(String n, String id, String t, ArrayList<Assignment> a) {
+	public Class(String n, String id, String t, Stack<Assignment> a) {
 		this(n, id);
 		setAssigns(a);
 	}
@@ -101,11 +101,11 @@ public class Class {
 		this.grade = grade;
 	}
 
-	public ArrayList<Assignment> getAssigns() {
+	public Stack<Assignment> getAssigns() {
 		return assigns;
 	}
 
-	public void setAssigns(ArrayList<Assignment> assigns) {
+	public void setAssigns(Stack<Assignment> assigns) {
 		this.assigns = assigns;
 	}
 
