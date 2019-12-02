@@ -23,7 +23,7 @@ public class LocalTest {
 //		
 //		System.out.println(test.format());
 
-		StudentFetcher grades = new StudentFetcher("s692278", "Cfisd0207", "10");
+		StudentFetcher grades = new StudentFetcher("s692278", "Password12345", "10");
 //		long start = System.currentTimeMillis();
 		String ret = grades.populateStudent();
 		System.out.println(ret);

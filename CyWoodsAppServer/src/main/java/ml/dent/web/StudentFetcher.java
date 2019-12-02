@@ -114,47 +114,35 @@ public class StudentFetcher extends AbstractFetcher {
 			return loginRet;
 		}
 
-		Runnable task2 = new Runnable() {
-			@Override
-			public void run() {
-				try {
-					fetchTranscript();
-					if (fin[2].get() == -1) {
-						fin[2].set(0);
-					}
-				} catch (Exception e) {
-					fin[2].set(1);
-					logger.log("ID: " + userId);
-					logger.log("Failed to fetch transcript");
-					logger.logError(e);
-					logger.log("START RESPONSE");
-					logger.log(currentUser.getJsonData().format());
-					logger.log("END RESPONSE");
-					ret += "Failed to fetch transcript ";
-				}
+		try {
+			fetchTranscript();
+			if (fin[2].get() == -1) {
+				fin[2].set(0);
 			}
-		};
-		new Thread(task2).start();
+		} catch (Exception e) {
+			fin[2].set(1);
+			logger.log("ID: " + userId);
+			logger.log("Failed to fetch transcript");
+			logger.logError(e);
+			logger.log("START RESPONSE");
+			logger.log(currentUser.getJsonData().format());
+			logger.log("END RESPONSE");
+			ret += "Failed to fetch transcript ";
+		}
 
-		Runnable task3 = new Runnable() {
-			@Override
-			public void run() {
-				try {
-					fetchAttendance();
-					fin[3].set(0);
-				} catch (Exception e) {
-					fin[3].set(1);
-					logger.log("ID: " + userId);
-					logger.log("Failed to fetch attendance");
-					logger.logError(e);
-					logger.log("START RESPONSE");
-					logger.log(currentUser.getJsonData().format());
-					logger.log("END RESPONSE");
-					ret += "Failed to fetch attendance ";
-				}
-			}
-		};
-		new Thread(task3).start();
+		try {
+			fetchAttendance();
+			fin[3].set(0);
+		} catch (Exception e) {
+			fin[3].set(1);
+			logger.log("ID: " + userId);
+			logger.log("Failed to fetch attendance");
+			logger.logError(e);
+			logger.log("START RESPONSE");
+			logger.log(currentUser.getJsonData().format());
+			logger.log("END RESPONSE");
+			ret += "Failed to fetch attendance ";
+		}
 
 		try {
 			fetchWeekView();
