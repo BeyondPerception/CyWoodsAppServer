@@ -24,13 +24,13 @@ public class LocalTest {
 //		System.out.println(test.format());
 
 		StudentFetcher grades = new StudentFetcher("s692278", "Password12345", "10");
-//		long start = System.currentTimeMillis();
+		long start = System.currentTimeMillis();
 		String ret = grades.populateStudent();
 		System.out.println(ret);
 		String test = grades.returnStudent().getJsonData().format();
-		
+		System.out.println(System.currentTimeMillis() - start);
 		System.out.println(test);
-		
+
 //		System.out.println(System.currentTimeMillis() - start);
 
 //		System.out.println(new JsonObject().add("08/10", "School Closed").add("08/11", "1 No Contact\n2 No Contact")
