@@ -161,3 +161,7 @@ hs_err_pid*
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+*.iml
+.idea/
+MonthlySchedules.txt
