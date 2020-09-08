@@ -39,14 +39,13 @@ public class StudentFetcher extends AbstractFetcher {
     // Home Access Center URLS that we will be parsing.
     private static final String HAC_LOGIN_URL      = "https://home-access.cfisd.net/HomeAccess/Account/LogOn";
     private static final String HAC_SCHEDULE_URL   = "https://home-access.cfisd.net/HomeAccess/Home/WeekView";
-    private static final String HAC_TRANSCIRPT_URL = "https://home-access.cfisd.net/HomeAccess/Content/Student/Transcript.aspx";
+    private static final String HAC_TRANSCRIPT_URL = "https://home-access.cfisd.net/HomeAccess/Content/Student/Transcript.aspx";
     private static final String HAC_ATTENDANCE_URL = "https://home-access.cfisd.net/HomeAccess/Content/Attendance/MonthlyView.aspx";
     private static final String HAC_REPORTCARD_URL = "https://home-access.cfisd.net/HomeAccess/Content/Student/ReportCards.aspx";
 
     // Cookies and such
     private String authCookie;
     private String sessionID;
-    // private String siteCode;
 
     /**
      * Kind of counter-intuitively, the grade fetcher builds up the instance of the
@@ -90,20 +89,15 @@ public class StudentFetcher extends AbstractFetcher {
         return currentUser;
     }
 
-    private String ret;
-
     private boolean ready() {
-        if (fin[0].get() == -1 || fin[1].get() == -1 || fin[2].get() == -1 || fin[3].get() == -1) {
-            return false;
-        }
-        return true;
+        return fin[0].get() != -1 && fin[1].get() != -1 && fin[2].get() != -1 && fin[3].get() != -1;
     }
 
     /**
      * This method calls each populating method
      */
     public String populateStudent() {
-        ret = "";
+        String ret = "";
         String loginRet = login();
 
         if (loginRet != null) {
@@ -229,6 +223,7 @@ public class StudentFetcher extends AbstractFetcher {
 
         return null;
     }
+
 
     /**
      * Grabs everything it can from the WeekView on Home Access. Not assignments
@@ -435,7 +430,7 @@ public class StudentFetcher extends AbstractFetcher {
     }
 
     private void fetchTranscript() throws IOException {
-        Document transView = getDocument(HAC_TRANSCIRPT_URL);
+        Document transView = getDocument(HAC_TRANSCRIPT_URL);
         Elements yearTable = transView.select(".sg-content-grid > table:nth-child(2) > tbody:nth-child(1)")
                 .select("tr");
         try {
@@ -565,10 +560,9 @@ public class StudentFetcher extends AbstractFetcher {
      * Classes; Classes is sketch, don't use classes
      */
     private String assignmentURL(int id, int quarter) {
-        return new StringBuilder().append(
-                "https://home-access.cfisd.net/HomeAccess/Content/Student/AssignmentsFromRCPopUp.aspx?section_key=")
-                .append(id).append("&course_session=1&RC_RUN=").append(quarter)
-                .append("&MARK_TITLE=9WK%20%20.Trim()&MARK_TYPE=9WK%20%20.Trim()&SLOT_INDEX=1").toString();
+        return "https://home-access.cfisd.net/HomeAccess/Content/Student/AssignmentsFromRCPopUp.aspx?section_key=" +
+                id + "&course_session=1&RC_RUN=" + quarter +
+                "&MARK_TITLE=9WK%20%20.Trim()&MARK_TYPE=9WK%20%20.Trim()&SLOT_INDEX=1";
     }
 
     private static int newGradeCounter = 1; // test counter to add new grades to test user everytime it is refreshed
@@ -585,7 +579,7 @@ public class StudentFetcher extends AbstractFetcher {
         for (int i = 0; i < newGradeCounter; i++) {
             if (i % 2 == 0) {
                 Assignment testAssign = new Assignment("Labs" + i, "Tests", "08/027/2019", "08/29/2019", "note", "100",
-                        1.0, "99", false);
+                        1.0, "" + (int) (Math.random() * 100 + 1), false);
                 testClass.addAssign(testAssign);
             } else {
                 Assignment testAssign = new Assignment("Labs" + i, "Tests", "08/027/2019", "08/29/2019", "note", "5",
