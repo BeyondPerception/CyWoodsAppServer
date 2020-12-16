@@ -385,12 +385,12 @@ public class StudentFetcher extends AbstractFetcher {
                     String name = cfuRow.get(0).text();
                     String points = cfuRow.get(1).text() + "/" + cfuRow.get(2).text();
                     try {
-                        double cfuWeight = Double.parseDouble(cfuRow.get(4).text()) / 100.0;
+                        double cfuWeight = Double.parseDouble(cfuRow.get(4).text());
                         if (cfuWeight == 0) {
                             cfuWeight = Double.NaN;
                         }
-                        if (cfuWeight < 1) {
-                            cfuWeight *= 100;
+                        if (cfuWeight >= 1) {
+                            cfuWeight /= 100.0;
                         }
                         curClass.addCategory(name, points, cfuWeight);
                     } catch (NumberFormatException e) {
@@ -402,12 +402,12 @@ public class StudentFetcher extends AbstractFetcher {
                     String name = raRow.get(0).text();
                     String points = raRow.get(1).text() + "/" + raRow.get(2).text();
                     try {
-                        double raWeight = Double.parseDouble(raRow.get(4).text()) / 100.0;
+                        double raWeight = Double.parseDouble(raRow.get(4).text());
                         if (raWeight == 0) {
                             raWeight = Double.NaN;
                         }
-                        if (raWeight < 1) {
-                            raWeight *= 100;
+                        if (raWeight >= 1) {
+                            raWeight /= 100.0;
                         }
                         curClass.addCategory(name, points, raWeight);
                     } catch (NumberFormatException e) {
@@ -419,12 +419,12 @@ public class StudentFetcher extends AbstractFetcher {
                     String name = saRow.get(0).text();
                     String points = saRow.get(1).text() + "/" + saRow.get(2).text();
                     try {
-                        double saWeight = Double.parseDouble(saRow.get(4).text()) / 100.0;
+                        double saWeight = Double.parseDouble(saRow.get(4).text());
                         if (saWeight == 0) {
                             saWeight = Double.NaN;
                         }
-                        if (saWeight < 1) {
-                            saWeight *= 100;
+                        if (saWeight >= 1) {
+                            saWeight /= 100.0;
                         }
                         curClass.addCategory(name, points, saWeight);
                     } catch (NumberFormatException e) {
