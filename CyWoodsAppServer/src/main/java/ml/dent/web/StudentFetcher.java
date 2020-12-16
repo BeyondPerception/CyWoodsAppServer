@@ -389,6 +389,9 @@ public class StudentFetcher extends AbstractFetcher {
                         if (cfuWeight == 0) {
                             cfuWeight = Double.NaN;
                         }
+                        if (cfuWeight < 1) {
+                            cfuWeight *= 100;
+                        }
                         curClass.addCategory(name, points, cfuWeight);
                     } catch (NumberFormatException e) {
                         System.err.println("Failed to parse CFU weight");
@@ -403,6 +406,9 @@ public class StudentFetcher extends AbstractFetcher {
                         if (raWeight == 0) {
                             raWeight = Double.NaN;
                         }
+                        if (raWeight < 1) {
+                            raWeight *= 100;
+                        }
                         curClass.addCategory(name, points, raWeight);
                     } catch (NumberFormatException e) {
                         System.err.println("Failed to parse RA weight");
@@ -416,6 +422,9 @@ public class StudentFetcher extends AbstractFetcher {
                         double saWeight = Double.parseDouble(saRow.get(4).text()) / 100.0;
                         if (saWeight == 0) {
                             saWeight = Double.NaN;
+                        }
+                        if (saWeight < 1) {
+                            saWeight *= 100;
                         }
                         curClass.addCategory(name, points, saWeight);
                     } catch (NumberFormatException e) {
